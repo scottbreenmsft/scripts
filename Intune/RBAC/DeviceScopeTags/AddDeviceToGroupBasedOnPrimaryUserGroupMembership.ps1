@@ -5,57 +5,55 @@ Licensed under the MIT license.
 See LICENSE in the project root for license information.
 
 Version History
-0.1    Scott Breen    3/12/2019     Initial version
-0.2    Scott Breen    10/12/2019    Fixed some bugs and changed get-groupmembers function to return members of all subgbroups and to only return the IDs of those objects (using transitiveMembers instead of getGroupMembers).
-0.3    Scott Breen    10/12/2019    Changes code to be more efficient in only getting group membership when required and filtering the devices enrolled in the last 24 hours by default.
-0.4    Scott Breen    13/01/2020    Changed to use app only authentication
-0.5    Scott Breen    13/01/2020    Changed output to work with Azure Automation Runbooks
-0.6    Scott Breen    17/02/2020    Added ability to just target personal devices
+0.1    3/12/2019     Initial version
+0.2    10/12/2019    Fixed some bugs and changed get-groupmembers function to return members of all subgbroups and to only return the IDs of those objects (using transitiveMembers instead of getGroupMembers).
+0.3    10/12/2019    Changes code to be more efficient in only getting group membership when required and filtering the devices enrolled in the last 24 hours by default.
+0.4    13/01/2020    Changed to use app only authentication
+0.5    13/01/2020    Changed output to work with Azure Automation Runbooks
+0.6    7/02/2020     Changed two attributes to be script parameters to work with Azure Automation
 #>
 
 ####################################################
 
+param (
+    #change this attribute if you want to get devices enrolled within the last ‘n’ minutes. 
+    #Change this to 0 to get all devices. The time is in minutes.
+    #1440 is 24 hours
+    $filterByEnrolledWithinMinutes=0,
 
-#change this attribute if you want to get devices enrolled within the last ‘n’ minutes. 
-#Change this to 0 to get all devices. The time is in minutes.
-#1440 is 24 hours
-$filterByEnrolledWithinMinutes=0
-
-#set the following attribute to true if instead of using “enrolled within last n minutes” 
-#you’d like to control the schedule by getting all devices since the last execution of the 
-#Azure Run book that this script is being run in. 
-$useAzureAutomationLastJobTimeAsFilter=$true
+    #set the following attribute to true if instead of using “enrolled within last n minutes” 
+    #you’d like to control the schedule by getting all devices since the last execution of the 
+    #Azure Run book that this script is being run in. 
+    $useAzureAutomationLastJobTimeAsFilter=$true
+)
 
 #Azure AD  App Details for Auth
-$tenant = "breenacademy.onmicrosoft.com"
-$clientId = "851cd1f9-469d-47ba-bfde-eab80639f08f"
-$clientSecret = "o6UQ3_uA?5VV_sh:7zBwMppixQiFG8V0"
+$tenant = "<tenant>.onmicrosoft.com"
+$clientId = "<clientID>"
+$clientSecret = "<client secret>"
 
 #Runbook details if running in Azure Automation to detect last job run time and to ensure not conflicting with running jobs. 
 #If the script is being run from an onpremises server or manually, just leave these attributes as the default, the script will 
 #ignore them if it isn’t being run in the context of Azure Automation.
-$runbookName = "DeviceScopeTag"
-$rgName = "BreenLab"
-$aaName = "BreenAuto"
+$runbookName = "<runbookname>"
+$rgName = "<automation account resource group>"
+$aaName = "<automation account name>"
 
 #Record the list of user group to scope tag group mapping here
 $UserGroupRoleGroupMapping=@()
 $hash = @{                         
-        UserGroupID            = "66cc746f-1219-4afb-83e1-2fcf96ea4df2" #10001 - Breen Academy North
-        ScopeTagGroupID    = "af5fa98e-2b94-4cd8-9d3f-ec364882fba5"
+        UserGroupID            = "User Group A" #User Group A
+        ScopeTagGroupID    = "Device Group A"
         }                                              
 $UserGroupRoleGroupMapping+=(New-Object PSObject -Property $hash)
 $hash = @{                       
-        UserGroupID             = "0b59cddd-d56c-4857-98d8-f1bb066a947e" #10002 - Breen Academy South
-        ScopeTagGroupID    = "23cf75a8-1ba8-4602-bc4a-cdd2d4e39085"
+        UserGroupID             = "User Group B" #User Group B
+        ScopeTagGroupID    = "Device Group B"
         }                                              
 $UserGroupRoleGroupMapping+=(New-Object PSObject -Property $hash)
 
 #create the property to keep a cached copy of user group membership while the script runs
 $cachedUserGroupMemberships=@()
-
-#set to true to filter the devices retrieved to personal devices
-$personalOnly=$true
 
 #If the script is being run from Azure Automation (this variable is populated in Auzre Automation)
 if ($PSPrivateMetadata.JobId) {
@@ -94,7 +92,6 @@ if ($PSPrivateMetadata.JobId) {
     }
     
 }
-
 
 
 function Get-AuthTokenClientSecret {
@@ -142,176 +139,173 @@ function Get-AuthTokenClientSecret {
     [System.Reflection.Assembly]::LoadFrom($adal) | Out-Null
     
 
-	try {
+    try {
 
         #https://docs.microsoft.com/en-us/dotnet/api/microsoft.identitymodel.clients.activedirectory.authenticationcontext.acquiretokenasync?view=azure-dotnet#Microsoft_IdentityModel_Clients_ActiveDirectory_AuthenticationContext_AcquireTokenAsync_System_String_Microsoft_IdentityModel_Clients_ActiveDirectory_ClientCredential_
-	    $authContext = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext" -ArgumentList $authority
+        $authContext = New-Object "Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationContext" -ArgumentList $authority
         $clientCredential = New-Object -TypeName "Microsoft.IdentityModel.Clients.ActiveDirectory.ClientCredential"($clientID, $clientSecret)
         $authResult=$authContext.AcquireTokenAsync($resourceAppIdURI, $clientCredential).result
 
-		# If the accesstoken is valid then create the authentication header
-		if($authResult.AccessToken){
+        # If the accesstoken is valid then create the authentication header
+        if($authResult.AccessToken){
             # Creating header for Authorization token
-		    $authHeader = @{
-			    'Content-Type'='application/json'
-			    'Authorization'="Bearer " + $authResult.AccessToken
-			    'ExpiresOn'=$authResult.ExpiresOn
-			    }
+            $authHeader = @{
+                'Content-Type'='application/json'
+                'Authorization'="Bearer " + $authResult.AccessToken
+                'ExpiresOn'=$authResult.ExpiresOn
+                }
 
-		    return $authHeader
+            return $authHeader
 
-		}
+        }
 
-		else {
-		    write-error "Authorization Access Token is null, please re-run authentication..."
-		    break
+        else {
+            write-error "Authorization Access Token is null, please re-run authentication..."
+            break
 
-		}
+        }
 
-	}
+    }
 
-	catch {
+    catch {
 
-	    write-output $_.Exception.Message 
-	    write-output $_.Exception.ItemName 
-	    break
+        write-output $_.Exception.Message 
+        write-output $_.Exception.ItemName 
+        break
 
-	}
+    }
 
 }
 
-
 ####################################################
 
-	
+    
 ####################################################
 Function Get-UserGroups {
-	
+    
 [cmdletbinding()]
     param (
         $id
     )
 
-	
-	$graphApiVersion = "Beta"
-	$Resource = "users/$id/getMemberGroups"
+    
+    $graphApiVersion = "Beta"
+    $Resource = "users/$id/getMemberGroups"
     $body='{"securityEnabledOnly": true}'
-	
-	try
-	{
+    
+    try
+    {
 
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
-		(Invoke-RestMethod -Uri $uri -Headers $authToken -Method Post -Body $body).value
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
+        (Invoke-RestMethod -Uri $uri -Headers $authToken -Method Post -Body $body).value
 
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
+    }
+    
+    catch
+    {
+        
+        $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
-		
-	}
-	
+        break
+        
+    }
+    
 }
-
 
 ####################################################
 Function Get-GroupMembers {
-	
+    
 [cmdletbinding()]
     param (
         $id
     )
 
-	
-	$graphApiVersion = "Beta"
-	$Resource = "groups/$id/transitiveMembers"
+    
+    $graphApiVersion = "Beta"
+    $Resource = "groups/$id/transitiveMembers"
     $body='{"securityEnabledOnly": true}'
-	
-	try
-	{
+    
+    try
+    {
 
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
-		(Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get).value.id
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
+        (Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get).value.id
 
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
+    }
+    
+    catch
+    {
+        
+        $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
-		
-	}
-	
+        break
+        
+    }
+    
 }
 Function Get-User {
-	
+    
 [cmdletbinding()]
     param (
         $id
     )
 
-	
-	$graphApiVersion = "Beta"
-	$Resource = "users/$id"
-	
-	try
-	{
+    
+    $graphApiVersion = "Beta"
+    $Resource = "users/$id"
+    
+    try
+    {
 
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
-		Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
+        Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
 
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
+    }
+    
+    catch
+    {
+        
+        $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
-		
-	}
-	
+        break
+        
+    }
+    
 }
-
 
 
 Function Get-Devices {
-	
+    
 [cmdletbinding()]
 
 param
@@ -322,61 +316,49 @@ param
 
 #https://docs.microsoft.com/en-us/graph/query-parameters
 
-	
-	$graphApiVersion = "beta"
-	$Resource = "deviceManagement/managedDevices"
+    
+    $graphApiVersion = "beta"
+    $Resource = "deviceManagement/managedDevices"
 
     If ($filterByEnrolledWithinMinutes) {
         $minutesago = "{0:s}" -f (get-date).addminutes(0-$filterByEnrolledWithinMinutes) + "Z"
         $filter = "?`$filter=enrolledDateTime ge $minutesAgo"
-
-        If ($personalOnly) {
-            $filter ="$filter and managedDeviceOwnerType eq 'Personal'"
-        }
     } else {
-        If ($personalOnly) {
-            $filter ="?`$filter=managedDeviceOwnerType eq 'Personal'"
-        } else {
-            $filter = ""
-        }
+        $filter=""
     }
 
     if ($enrolledSinceDate) {
         $formattedDateTime ="{0:s}" -f (get-date $enrolledSinceDate) + "Z"
         $filter = "?`$filter=enrolledDateTime ge $formattedDateTime"
-
-        If ($personalOnly) {
-            $filter ="$filter and managedDeviceOwnerType eq 'Personal'"
-        }
     }
-	
-	try
-	{
+    
+    try
+    {
         
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)$filter"
-		Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)$filter"
+        Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
 
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
+    }
+    
+    catch
+    {
+        
+        $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
-		
-	}
-	
+        break
+        
+    }
+    
 }
 
 ####################################################
@@ -385,7 +367,7 @@ param
 
 
 
-
+        $minutesago = "{0:s}" -f (get-date).addminutes(0-$filterByEnrolledWithinMinutes) + "Z"
 Function Get-AADDevice(){
 
 <#
@@ -423,39 +405,39 @@ $Resource = "devices"
 
         $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
+        break
 
     }
 
 }
 
 Function Add-DeviceMember {
-	
+    
 [cmdletbinding()]
 
 param
 (
-	[Parameter(Mandatory=$true)]
-	[string]$GroupId,
     [Parameter(Mandatory=$true)]
-	[string]$DeviceID
+    [string]$GroupId,
+    [Parameter(Mandatory=$true)]
+    [string]$DeviceID
 )
-	
-	$graphApiVersion = "Beta"
-	$Resource = "groups/$groupid/members/`$ref"
-	
-	try
-	{
+    
+    $graphApiVersion = "Beta"
+    $Resource = "groups/$groupid/members/`$ref"
+    
+    try
+    {
 
     $JSON=@"
 {
@@ -463,49 +445,48 @@ param
 }
 "@
 
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
-		Invoke-RestMethod -Uri $uri -Headers $authToken -Method Post -Body $JSON -ContentType "application/json"
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
+        Invoke-RestMethod -Uri $uri -Headers $authToken -Method Post -Body $JSON -ContentType "application/json"
 
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
+    }
+    
+    catch
+    {
+        
+        $ex = $_.Exception
         If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
+            $errorResponse = $ex.Response.GetResponseStream()
+            $reader = New-Object System.IO.StreamReader($errorResponse)
+            $reader.BaseStream.Position = 0
+            $reader.DiscardBufferedData()
+            $responseBody = $reader.ReadToEnd();
+            write-verbose "Response content:`n$responseBody" 
             Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
         } else {
             write-error $ex.message
         }
-		break
-		
-	}
-	
+        break
+        
+    }
+    
 }
 
 ####################################################
 
 
-
 # Checking if authToken exists before running authentication
 if($global:authToken){
 
-	# Setting DateTime to Universal time to work in all timezones
-	$DateTime = (Get-Date).ToUniversalTime()
+    # Setting DateTime to Universal time to work in all timezones
+    $DateTime = (Get-Date).ToUniversalTime()
 
-	# If the authToken exists checking when it expires
-	$TokenExpires = ($authToken.ExpiresOn.datetime - $DateTime).Minutes
+    # If the authToken exists checking when it expires
+    $TokenExpires = ($authToken.ExpiresOn.datetime - $DateTime).Minutes
 
-		if($TokenExpires -le 0){
-		    write-verbose "Authentication Token expired $TokenExpires minutes ago"
-		    $global:authToken = Get-AuthTokenClientSecret
-		}
+        if($TokenExpires -le 0){
+            write-verbose "Authentication Token expired $TokenExpires minutes ago"
+            $global:authToken = Get-AuthTokenClientSecret
+        }
 }
 
 # Authentication doesn't exist, calling Get-AuthToken function
@@ -519,7 +500,6 @@ else {
 #endregion
 
 ####################################################
-
 
 
 IF ($filterByEnrolledWithinMinutes -ne 0) {
@@ -537,7 +517,6 @@ IF ($filterByEnrolledWithinMinutes -ne 0) {
 
     }
 }
-
 
 write-output "$($devices.count) returned."
 foreach ($device in $devices) {
@@ -601,6 +580,4 @@ foreach ($device in $devices) {
         }
 
     }
-}
-
-
+} 
