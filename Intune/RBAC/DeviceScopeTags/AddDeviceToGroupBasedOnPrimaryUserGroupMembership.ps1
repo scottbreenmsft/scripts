@@ -19,12 +19,12 @@ param (
     #change this attribute if you want to get devices enrolled within the last ‘n’ minutes. 
     #Change this to 0 to get all devices. The time is in minutes.
     #1440 is 24 hours
-    $filterByEnrolledWithinMinutes=0,
+    [int]$filterByEnrolledWithinMinutes=0,
 
     #set the following attribute to true if instead of using “enrolled within last n minutes” 
     #you’d like to control the schedule by getting all devices since the last execution of the 
     #Azure Run book that this script is being run in. 
-    $useAzureAutomationLastJobTimeAsFilter=$true
+    [boolean]$useAzureAutomationLastJobTimeAsFilter=$true
 )
 
 #Azure AD  App Details for Auth
