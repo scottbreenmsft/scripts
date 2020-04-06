@@ -1,6 +1,6 @@
 ﻿
 
-#This is the App Registration client ID for this script that is used to access then Graph API
+#This is the App Registration client ID for this script that is used to access the Graph API
 #   permissions required:
 #     - Group.ReadWrite.All
 $ApplicationClientID="<update me>"
@@ -420,7 +420,7 @@ foreach ($class in $classesWithoutTeams) {
     #We cannot create Teams for groups without owners, so we'll check the group has an owner first.
     #each group created by SDS will have a service principal owner, so we have to check if there is more than 1 owner.
     IF ((GetGroupOwners $Class.ID).count -lt 2) {
-        write-host "no owners for $($Class.ID) - resolve before group creation successful" -ForegroundColor red
+        write-host "no owners for $($Class.displayName) | $($Class.ID). Teams cannot be created for Office 365 groups without owners." -ForegroundColor red
 
     } else {
         #record the time immediately prior to attempting to create the team
