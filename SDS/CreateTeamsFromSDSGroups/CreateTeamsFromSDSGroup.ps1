@@ -3,7 +3,7 @@
 #This is the App Registration client ID for this script that is used to access then Graph API
 #   permissions required:
 #     - Group.ReadWrite.All
-$ApplicationClientID="d84f9025-2432-4c72-8a40-84ef30fdee2c"
+$ApplicationClientID="<update me>"
 
 
 function Get-AuthToken {
