@@ -4,3 +4,7 @@ This sample script enumerates Office 365 Groups that were created using School D
 
 
 See https://github.com/scottbreenmsft/scripts/blob/master/SDS/CreateTeamsFromSDSGroups/Script%20-%20Create%20Teams%20for%20SDS%20Synchronised%20Groups.pdf for more information.
+
+References:
+
+https://docs.microsoft.com/en-us/graph/teams-create-group-and-team
