@@ -6,6 +6,12 @@
 $ApplicationClientID="<update me>"
 
 
+##############################################
+# Temporarily turn on verbose
+##############################################
+#$VerbosePreference="Continue"
+
+
 function Get-AuthToken {
 
 <#
@@ -191,12 +197,12 @@ param
 		        
 
                 IF ($responseBody -like '*Status code: NotFound.*') {
-                    
+                    write-host "`tGroup not found, waiting for replication"
                 } else {
-                    write-verbose "Response content:`n$responseBody" 
+                    write-host "Response content:`n$responseBody" 
                 }
 
-                #Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
+                Write-host "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
             } else {
                #write-error $ex.message
             }
@@ -275,7 +281,7 @@ Function GetClassGroups() {
         $results=@()
 
         #create the URI string with the filter
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)?`$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section' and extension_fe2174665583431c953114ff7268b7b3_Education_Status eq 'Active'"
+		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)?`$filter=extension_fe2174665583431c953114ff7268b7b3_Education_ObjectType eq 'Section'"
 
         #retrieve the first page of results
 		$result=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get -ContentType "application/json"
@@ -327,59 +333,42 @@ Function GetClassGroups() {
 	}
 }
 
-
-##############################################
-#
-#
-##############################################
-
-
-
-#region Authentication
-
-write-host
-
-# Checking if authToken exists before running authentication
-if($global:authToken){
-
+function CheckAuthToken {
     # Setting DateTime to Universal time to work in all timezones
     $DateTime = (Get-Date).ToUniversalTime()
 
     # If the authToken exists checking when it expires
     $TokenExpires = ($authToken.ExpiresOn.datetime - $DateTime).Minutes
 
-        if($TokenExpires -le 0){
-
+    if($TokenExpires -le 0){
         write-host "Authentication Token expired" $TokenExpires "minutes ago" -ForegroundColor Yellow
-        write-host
-
-            # Defining Azure AD tenant name, this is the name of your Azure Active Directory (do not use the verified domain name)
-
-            if($User -eq $null -or $User -eq ""){
-
-            $User = Read-Host -Prompt "Please specify your user principal name for Azure Authentication"
-            Write-Host
-
-            }
-
         $global:authToken = Get-AuthToken -User $User
-
-        }
+    }
 }
 
-# Authentication doesn't exist, calling Get-AuthToken function
 
-else {
 
-    if($User -eq $null -or $User -eq ""){
+##############################################
+#
+#
+##############################################
 
+
+#region Authentication
+
+#get username so we can renew token as needed
+if($User -eq $null -or $User -eq ""){
     $User = Read-Host -Prompt "Please specify your user principal name for Azure Authentication"
-    Write-Host
+}
 
-    }
+# Checking if authToken exists before running authentication
+if($global:authToken){
+    CheckAuthToken
+} else {
 
-# Getting the authorization token
-$global:authToken = Get-AuthToken -User $User
+    # Authentication doesn't exist, calling Get-AuthToken function
+    # Getting the authorization token
+    $global:authToken = Get-AuthToken -User $User
 
 }
 
@@ -411,39 +400,90 @@ write-host "$($classes.count) classes"
 $classesWithoutTeams=$Classes | where {$_.resourceProvisioningOptions -notcontains "Team"}
 write-host "$($classesWithoutTeams.count) classes without teams"
 
+#get a list of schools from the list of classes. Prompt the user to select the schools.
+$schools=$classesWithoutTeams | group extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId | sort name | select name,@{n="Classes";e={$_.count}} | Out-GridView -title "Select the schools to provision" -PassThru
+IF (-not $schools) {
+    $schools=$classesWithoutTeams | group extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId | sort name | select name,@{n="Classes";e={$_.count}}
+}
+write-host "$($schools.count) schools selected without teams"
+write-host "Actioning: `n$($schools.name -join "`n")"
+
 #create an object to store how long it takes to create each team
 $time=@()
 
-#enumerate through each class that doesn't have a team, check it has an owner and create a Team
-foreach ($class in $classesWithoutTeams) {
+#create an object to store failed classes
+$failedclasses=@()
 
-    #We cannot create Teams for groups without owners, so we'll check the group has an owner first.
-    #each group created by SDS will have a service principal owner, so we have to check if there is more than 1 owner.
-    IF ((GetGroupOwners $Class.ID).count -lt 2) {
-        write-host "no owners for $($Class.displayName) | $($Class.ID). Teams cannot be created for Office 365 groups without owners." -ForegroundColor red
+#enumerate through each of the selected schools
+$schoolCount=0
+foreach ($school in $schools) {
+    $schoolCount++
+    write-host "processing $($school.name)"
+    IF ($schools.count) {
+        Write-Progress -Id 0 -PercentComplete $($schoolCount/$($schools.count) * 100) -Activity "processing $($school.name)" -Status "$schoolCount out of $($schools.count)"
+    }
 
-    } else {
-        #record the time immediately prior to attempting to create the team
-        $start=get-date
+    #get the list of classes for this school
+    $classesWithoutTeamsInSchool=$classesWithoutTeams | where {$_.extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId -eq $school.name}
+    write-host "$($classesWithoutTeamsInSchool.count) classes in $($school.name) without teams"
 
-        #attempt to create the Team
-        $result=CreateClassTeamFromGroup $Class.ID
+    #enumerate through each class that doesn't have a team, check it has an owner and create a Team
+    $classCount=0
+    foreach ($class in $classesWithoutTeamsInSchool) {
+        #check auth token
+        CheckAuthToken
 
-        #record results
-        if ($result) {
+        $classCount++
+        Write-Progress -Id 1 -PercentComplete $($classCount/$($classesWithoutTeamsInSchool.count) * 100) -Activity "processing $($class.displayName)" -Status "$classCount out of $($classesWithoutTeamsInSchool.count)"
 
-            #get the time to create information
-            $end=get-date
-            $difference=($end-$start).seconds
-            $time+=$difference
+        #We cannot create Teams for groups without owners, so we'll check the group has an owner first.
+        #each group created by SDS will have a service principal owner, so we have to check if there is more than 1 owner.
+        IF ((GetGroupOwners $Class.ID).count -lt 2) {
+            write-host "no owners for $($Class.displayName) | $($Class.ID). Teams cannot be created for Office 365 groups without owners." -ForegroundColor red
 
-            #output result
-            write-host "successfully created team for $($Class.displayName) | $($Class.ID)"
         } else {
-            write-host "failed to create team for $($Class.displayName) | $($Class.ID)"
+            #record the time immediately prior to attempting to create the team
+            $start=get-date
+
+            #attempt to create the Team
+            $result=CreateClassTeamFromGroup $Class.ID
+
+            #record results
+            if ($result) {
+
+                #get the time to create information
+                $end=get-date
+                $difference=($end-$start).seconds
+                $time+=$difference
+
+                #output result
+                write-host "successfully created team for $($Class.displayName) | $($Class.ID) | $difference seconds"
+            } else {
+                write-host "failed to create team for $($Class.displayName) | $($Class.ID)"
+                $failedclasses+=$class
+            }
         }
     }
 }
 
+#retry failed classes
+$failedclasses2=@()
+If ($failedclasses) {
+    write-host "attempting to create failed classes"
+    foreach ($class in $failedclasses) {
+        $result=CreateClassTeamFromGroup $Class.ID
+        if ($result) {
+                #output result
+                write-host "successfully created team for $($Class.displayName) | $($Class.ID) | $difference seconds"
+            } else {
+                write-host "failed to create team for $($Class.displayName) | $($Class.ID)"
+                $failedclasses2+=$class
+            }
+    }
+}
+
+
+
 #summarise results
+write-host "failed to create $($failedclasses2.count) classes. `n $($failedclasses2.displayname -join "`n")"
 write-host "It took an average of $(($time | Measure-Object -Average).Average) seconds to create each Team"
