@@ -8,6 +8,7 @@ See https://github.com/scottbreenmsft/scripts/blob/master/SDS/CreateTeamsFromSDS
 References:
 
 https://docs.microsoft.com/en-us/graph/teams-create-group-and-team
+
 https://docs.microsoft.com/en-us/graph/api/team-post?view=graph-rest-beta
 
 Script update on 15th April 2020:
