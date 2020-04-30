@@ -8,6 +8,7 @@ See https://github.com/scottbreenmsft/scripts/blob/master/SDS/CreateTeamsFromSDS
 References:
 
 https://docs.microsoft.com/en-us/graph/teams-create-group-and-team
+https://docs.microsoft.com/en-us/graph/api/team-post?view=graph-rest-beta
 
 Script update on 15th April 2020:
  - Updated to prompt which schools to provision classes for and provide progress indicators. This allows multiple sessions of the script to be run in separate powershell.exe processes to create teams as a multi threaded operation.
