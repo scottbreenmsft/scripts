@@ -367,7 +367,6 @@ param
     {
         $results=@()
         $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)$($filter)"
-        write-host $uri
         $result=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
         $results+=$result
 
