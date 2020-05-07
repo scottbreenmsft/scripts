@@ -11,7 +11,7 @@ Version History
 0.4    13/01/2020    Changed to use app only authentication
 0.5    13/01/2020    Changed output to work with Azure Automation Runbooks
 0.6    7/02/2020     Changed two attributes to be script parameters to work with Azure Automation
-0.7    Scott Breen    8/05/2020     Added paging to Get-Devices and Get-GroupMembers functions
+0.7    8/05/2020     Added paging to Get-Devices and Get-GroupMembers functions
 #>
 
 ####################################################
