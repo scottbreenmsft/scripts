@@ -1,4 +1,8 @@
+param (
 
+    $csvpath=read-host "Enter CSV path"
+
+)
 
 Function Get-RoleAssignments(){
 
@@ -631,10 +635,9 @@ $global:authToken = Get-AuthToken -User $User
 
 
 
-$csv="C:\Users\scbree\OneDrive\Scripts\Intune\BulkCreateNewSchoolRBAC\assignments.csv"
-$NewRoleAssignments=import-csv $csv
+#import the CSV
+$NewRoleAssignments=import-csv $csvpath
 
-$RBACRoles=Get-RBACScopeTag
 
 foreach ($NewRoleAssignment in $NewRoleAssignments) {
     $RBACRoles=Get-RBACScopeTag
