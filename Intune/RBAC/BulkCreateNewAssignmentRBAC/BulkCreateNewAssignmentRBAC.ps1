@@ -1,6 +1,6 @@
 param (
 
-    $csvpath=read-host "Enter CSV path"
+    $csvpath=(read-host "Enter CSV path")
 
 )
 
