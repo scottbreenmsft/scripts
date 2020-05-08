@@ -1,3 +1,7 @@
+########################
+#https://github.com/scottbreenmsft/scripts/tree/master/Intune/RBAC/BulkCreateNewAssignmentRBAC
+########################
+
 param (
 
     $csvpath=(read-host "Enter CSV path")
