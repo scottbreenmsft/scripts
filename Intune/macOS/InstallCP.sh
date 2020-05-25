@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Script to install Company Portal and display it
+
+# Let's check to see if CP is already installed...
+if [[ -a "/Applications/Company Portal.app" ]]; then
+  echo "Company Portal already installed, nothing to do here"
+  exit 0
+else
+  echo "Downloading Company Portal"  | tee -a /var/log/install.log
+  curl -L -o /tmp/cp.pkg 'https://go.microsoft.com/fwlink/?linkid=853070'
+  echo "Installing Company Portal"  | tee -a /var/log/install.log
+  installer -pkg /tmp/cp.pkg -target /Applications  | tee -a /var/log/install.log
+  sudo rm -rf /tmp/dockutil
+  git clone https://github.com/kcrawford/dockutil /tmp/dockutil
+  /tmp/dockutil/scripts/dockutil --add "/Applications/Company Portal.app" --allhomes
+fi
