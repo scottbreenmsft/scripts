@@ -1,8 +1,6 @@
 # Microsoft Edge Desktop Shortcut Control
 
-Edge 83 has provided the capability to control whether or not a desktop shortcut is created for Edge - https://docs.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#createdesktopshortcutdefault.
-
-Microsoft Intune will soon have this setting available natively through the Windows 10 Administrative Templates profile type, but in the meantime you can test or apply the setting using a Windows 10 custom profile.
+Edge 83 has provided the capability to control whether or not a desktop shortcut is created for Edge - https://docs.microsoft.com/en-us/deployedge/microsoft-edge-update-policies#createdesktopshortcutdefault. This can be tested in Intune now by deploying the setting as a custom ADMX.
 
 ## Create a custom Windows 10 profile
 
