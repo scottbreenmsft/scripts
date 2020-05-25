@@ -5,7 +5,7 @@
 
 #sleep 10
 
-echo Removing Dock Persistent Apps
+echo dock config: Removing Dock Persistent Apps | tee -a /var/log/install.log
 defaults delete ~/Library/Preferences/com.apple.dock persistent-apps
 defaults delete ~/Library/Preferences/com.apple.dock persistent-others
 
@@ -21,7 +21,7 @@ dockitems=( "/Applications/Microsoft Edge.app"
             "/System/Applications/Utilities/Terminal.app"
             "/System/Applications/System Preferences.app")
 
-echo Looking for required applications...
+echo dock config: Looking for required applications... | tee -a /var/log/install.log
 
 while [[ $ready -ne 1 ]];do
 
@@ -31,19 +31,19 @@ while [[ $ready -ne 1 ]];do
     if [[ -a "$i" ]]; then
       echo "$i found!"
     else
-      echo "$i not installed yet"
+      echo "dock config: $i not installed yet"  | tee -a /var/log/install.log
       let missingappcount=$missingappcount+1
 
     fi
   done
 
-  echo "Missing app count is $missingappcount"
+  echo "dock config:Missing app count is $missingappcount"
 
   if [[ $missingappcount -eq 0 ]]; then
     ready=1
-    echo "All apps found, lets prep the dock"
+    echo "dock config: All apps found, lets prep the dock" | tee -a /var/log/install.log
   else
-    echo "Waiting for 60 seconds"
+    echo "dock config: Waiting for 60 seconds" | tee -a /var/log/install.log
     sleep 60
   fi
 
@@ -52,24 +52,24 @@ done
 
 
 for i in $dockitems; do
-  echo Looking for "$i"
+  echo Looking for "$i" | tee -a /var/log/install.log
   if [[ -a "$i" ]] ; then
-    echo Adding $i to Dock
+    echo dock config: Adding $i to Dock | tee -a /var/log/install.log
     defaults write com.apple.dock persistent-apps -array-add "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>$i</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
   fi
 done
 
-echo Enabling Magnification
+echo dock config: Enabling Magnification | tee -a /var/log/install.log
 defaults write com.apple.dock magnification -boolean YES
 
-echo Enable Dim Hidden Apps in Dock
+echo dock config: Enable Dim Hidden Apps in Dock | tee -a /var/log/install.log
 defaults write com.apple.dock showhidden -bool true
 
 #echo Enable Auto Hide dock
 #defaults write com.apple.dock autohide -bool true
 
-echo Enable Minimise Icons into Dock Icons
+echo dock config: Enable Minimise Icons into Dock Icons | tee -a /var/log/install.log
 defaults write com.apple.dock minimize-to-application -bool yes
 
-echo Restarting Dock
+echo dock config: Restarting Dock | tee -a /var/log/install.log
 killall Dock
