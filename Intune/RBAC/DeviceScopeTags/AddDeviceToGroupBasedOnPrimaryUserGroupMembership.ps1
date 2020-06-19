@@ -525,35 +525,31 @@ param
     
 }
 
-####################################################
 
-
-# Checking if authToken exists before running authentication
-if($global:authToken){
-
+function CheckAuthToken {
     # Setting DateTime to Universal time to work in all timezones
     $DateTime = (Get-Date).ToUniversalTime()
 
     # If the authToken exists checking when it expires
     $TokenExpires = ($authToken.ExpiresOn.datetime - $DateTime).Minutes
 
-        if($TokenExpires -le 0){
-            write-verbose "Authentication Token expired $TokenExpires minutes ago"
-            $global:authToken = Get-AuthTokenClientSecret
-        }
+    if($TokenExpires -le 1){
+        write-host "Authentication Token expired" $TokenExpires "minutes ago" -ForegroundColor Yellow
+        $global:authToken = Get-AuthTokenClientSecret
+    }
 }
 
-# Authentication doesn't exist, calling Get-AuthToken function
+####################################################
 
-else {
-    # Getting the authorization token
-    write-output "Authenticating..."
-    $global:authToken = Get-AuthTokenClientSecret
-}
+
+
+# Checking if authToken exists before running authentication
+CheckAuthToken
 
 #endregion
 
 ####################################################
+
 
 
 IF ($filterByEnrolledWithinMinutes -ne 0) {
@@ -572,10 +568,13 @@ IF ($filterByEnrolledWithinMinutes -ne 0) {
     }
 }
 
+
 write-output "$($devices.count) returned."
 foreach ($device in $devices) {
     If ($device.userid) {
         write-output "Processing device: $($device.devicename). Serial: $($device.serialnumber). AADDeviceID= $($device.azureADDeviceId). User: $($device.userPrincipalName)"
+
+        CheckAuthToken
 
         #check if we have the user group membership in our user group cache
         If ($cachedUserGroupMemberships.UserID -contains $device.userid) {
@@ -634,4 +633,6 @@ foreach ($device in $devices) {
         }
 
     }
-} 
+}
+
+
