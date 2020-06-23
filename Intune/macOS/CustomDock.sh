@@ -6,8 +6,7 @@
 #sleep 10
 
 echo dock config: Removing Dock Persistent Apps | tee -a /var/log/install.log
-defaults delete ~/Library/Preferences/com.apple.dock persistent-apps
-defaults delete ~/Library/Preferences/com.apple.dock persistent-others
+
 
 dockitems=( "/Applications/Microsoft Edge.app"
             "/Applications/Microsoft Outlook.app"
@@ -17,9 +16,8 @@ dockitems=( "/Applications/Microsoft Edge.app"
             "/Applications/Microsoft PowerPoint.app"
             "/Applications/Microsoft OneNote.app"
 	          "/Applications/Company Portal.app"
-            "/System/Applications/App Store.app"
-            "/System/Applications/Utilities/Terminal.app"
-            "/System/Applications/System Preferences.app")
+            "/Applications/App Store.app"
+            "/Applications/System Preferences.app")
 
 echo dock config: Looking for required applications... | tee -a /var/log/install.log
 
@@ -49,6 +47,10 @@ while [[ $ready -ne 1 ]];do
 
 
 done
+
+echo dock config: Clearing Dock | tee -a /var/log/install.log
+defaults delete ~/Library/Preferences/com.apple.dock persistent-apps
+defaults delete ~/Library/Preferences/com.apple.dock persistent-others
 
 
 for i in $dockitems; do
