@@ -1,4 +1,4 @@
-# Revoke Select Licenses For VPPToken
+# Revoke Select Licenses For VPP Token
 
 This script allows you to connect directly to the Apple VPP service using your VPP token to selectively revoke all licenses for 1 or more selected apps. You will need to download the VPP token from Apple School Manager / Apple Business Manager and enter the path to the file when the script prompts.
 
