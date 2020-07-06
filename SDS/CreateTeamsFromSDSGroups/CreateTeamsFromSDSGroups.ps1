@@ -12,6 +12,12 @@ $ApplicationClientID="<update me>"
 #$VerbosePreference="Continue"
 
 
+##############################################
+# Temporarily turn on verbose
+##############################################
+#$VerbosePreference="Continue"
+
+
 function Get-AuthToken {
 
 <#
@@ -402,9 +408,6 @@ write-host "$($classesWithoutTeams.count) classes without teams"
 
 #get a list of schools from the list of classes. Prompt the user to select the schools.
 $schools=$classesWithoutTeams | group extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId | sort name | select name,@{n="Classes";e={$_.count}} | Out-GridView -title "Select the schools to provision" -PassThru
-IF (-not $schools) {
-    $schools=$classesWithoutTeams | group extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId | sort name | select name,@{n="Classes";e={$_.count}}
-}
 write-host "$($schools.count) schools selected without teams"
 write-host "Actioning: `n$($schools.name -join "`n")"
 
@@ -419,12 +422,12 @@ $schoolCount=0
 foreach ($school in $schools) {
     $schoolCount++
     write-host "processing $($school.name)"
-    IF ($schools.count) {
+    IF ($schools.count -gt 0) {
         Write-Progress -Id 0 -PercentComplete $($schoolCount/$($schools.count) * 100) -Activity "processing $($school.name)" -Status "$schoolCount out of $($schools.count)"
     }
 
     #get the list of classes for this school
-    $classesWithoutTeamsInSchool=$classesWithoutTeams | where {$_.extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId -eq $school.name}
+    $classesWithoutTeamsInSchool=@($classesWithoutTeams | where {$_.extension_fe2174665583431c953114ff7268b7b3_Education_SyncSource_SchoolId -eq $school.name})
     write-host "$($classesWithoutTeamsInSchool.count) classes in $($school.name) without teams"
 
     #enumerate through each class that doesn't have a team, check it has an owner and create a Team
@@ -434,8 +437,10 @@ foreach ($school in $schools) {
         CheckAuthToken
 
         $classCount++
-        Write-Progress -Id 1 -PercentComplete $($classCount/$($classesWithoutTeamsInSchool.count) * 100) -Activity "processing $($class.displayName)" -Status "$classCount out of $($classesWithoutTeamsInSchool.count)"
-
+        IF ($classesWithoutTeamsInSchool.count -gt 0) {
+            Write-Progress -Id 1 -PercentComplete $($classCount/$($classesWithoutTeamsInSchool.count) * 100) -Activity "processing $($class.displayName)" -Status "$classCount out of $($classesWithoutTeamsInSchool.count)"
+        }
+        
         #We cannot create Teams for groups without owners, so we'll check the group has an owner first.
         #each group created by SDS will have a service principal owner, so we have to check if there is more than 1 owner.
         IF ((GetGroupOwners $Class.ID).count -lt 2) {
