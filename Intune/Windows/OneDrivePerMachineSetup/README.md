@@ -1,4 +1,7 @@
 # OneDrive Per Machine Setup - Win32 app
+
+You can wrap this PowerShell script in a Win32 app and deploy it during a Windows deployment so that the first user logging on gets the OneDrive machine wide installer experience. This readme provides some of the key items in a Win32 app you'll need.
+
 ## Install command
 powershell.exe -executionpolicy bypass -command ".\OneDriveSetupMachineInstall.ps1"
 ## Uninstall command
