@@ -1,16 +1,9 @@
-
-# https://aka.ms/meeclientmacos
-
-# DMG installer
-
-
-
 #!/bin/bash
 #set -x
 
 ############################################################################################
 ##
-## Script to download latest Intune Company Portal for macOS
+## Script to download and install the latest Minecraft: Education Education for maCOS
 ##
 ###########################################
 
@@ -22,20 +15,19 @@
 ## (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or other pecuniary
 ## loss) arising out of the use of or inability to use the sample scripts or documentation, even if Microsoft has been advised of the possibility
 ## of such damages.
-## Feedback: neiljohn@microsoft.com
 
 # Define variables
-
-tempfile="/tmp/mee.pkg"
+tempfile="/tmp/mee.dmg"
 weburl="https://aka.ms/meeclientmacos"
-appname="Minecraft Education Edition"
+appname="Minecraft: Education Edition"
 log="/var/log/installmee.log"
+VOLUME="/tmp/InstallMEE"
 
 # start logging
 
 exec 1>> $log 2>&1
 
-if [[ -a "/Applications/Minecraft Education Edition.app" ]]; then
+if [[ -a "/Applications/$appname" ]]; then
   echo "$(date) | $appname already installed, nothing to do here"
   exit 0
 else 
@@ -47,26 +39,17 @@ else
    echo "############################################################"
    echo ""
 
-
    # Let's download the files we need and attempt to install...
-
    echo "$(date) | Downloading $appname"
    curl -L -f -o $tempfile $weburl
 
+   # Mount the dmg file...
    echo "$(date) | Installing $appname"
-   #installer -dumplog -pkg $tempfile -target /Applications
+   hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
-
-   #hdiutil mount $tempfile
-   #cp -R "/Volumes/AdobeAIR of the AdobeAIR/ of the AdobeAIR.app" /Applications
-
-
-  VOLUME=$(hdiutil attach -nobrowse '$tempfile' |
-    awk 'END {print $3}'; exit ${PIPESTATUS[0]}) &&
-  (rsync -a "$VOLUME"/*.app /Applications/; SYNCED=$?
+    # Copy the application and unmount once complete
+   (rsync -a "$VOLUME"/*.app /Applications/; SYNCED=$?
     hdiutil detach -quiet "$VOLUME"; exit $? || exit "$SYNCED")
-
-
 
    if [ "$?" = "0" ]; then
       echo "$(date) | $appname Installed"
@@ -74,6 +57,7 @@ else
       rm -rf $tempfile
       exit 0
    else
+   
    # Something went wrong here, either the download failed or the install Failed
    # intune will pick up the exit status and the IT Pro can use that to determine what went wrong.
    # Intune can also return the log file if requested by the admin
