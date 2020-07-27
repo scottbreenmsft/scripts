@@ -20,6 +20,7 @@
 tempfile="/tmp/mee.dmg"
 weburl="https://aka.ms/meeclientmacos"
 appname="Minecraft: Education Edition"
+app="minecraftpe.app"
 log="/var/log/installmee.log"
 VOLUME="/tmp/InstallMEE"
 
@@ -27,10 +28,10 @@ VOLUME="/tmp/InstallMEE"
 
 exec 1>> $log 2>&1
 
-if [[ -a "/Applications/$appname" ]]; then
+if [[ -a "/Applications/$app" ]]; then
   echo "$(date) | $appname already installed, nothing to do here"
   exit 0
-else 
+else
 # Begin Script Body
 
    echo ""
@@ -47,8 +48,8 @@ else
    echo "$(date) | Installing $appname"
    hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
-    # Copy the application and unmount once complete
-   (rsync -a "$VOLUME"/*.app /Applications/; SYNCED=$?
+    # Sync the application and unmount once complete
+    (rsync -a "$VOLUME"/*.app /Applications/; SYNCED=$?
     hdiutil detach -quiet "$VOLUME"; exit $? || exit "$SYNCED")
 
    if [ "$?" = "0" ]; then
@@ -57,7 +58,7 @@ else
       rm -rf $tempfile
       exit 0
    else
-   
+
    # Something went wrong here, either the download failed or the install Failed
    # intune will pick up the exit status and the IT Pro can use that to determine what went wrong.
    # Intune can also return the log file if requested by the admin
