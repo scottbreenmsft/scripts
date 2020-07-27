@@ -49,8 +49,10 @@ else
    hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
     # Sync the application and unmount once complete
-    (rsync -a "$VOLUME"/*.app /Applications/; SYNCED=$?
-    hdiutil detach -quiet "$VOLUME"; exit $? || exit "$SYNCED")
+    cp -R "$VOLUME"/*.app /Applications/
+
+    #unmount the dmg
+    hdiutil detach -quiet "$VOLUME"
 
    if [ "$?" = "0" ]; then
       echo "$(date) | $appname Installed"
