@@ -5,7 +5,7 @@
 ##
 ## Script to download and install the latest Minecraft: Education Education for maCOS
 ##
-###########################################
+############################################################################################
 
 ## Copyright (c) 2020 Microsoft Corp. All rights reserved.
 ## Scripts are not supported under any Microsoft standard support program or service. The scripts are provided AS IS without warranty of any kind.
@@ -29,24 +29,24 @@ VOLUME="/tmp/InstallMEE"
 exec 1>> $log 2>&1
 
 if [[ -a "/Applications/$app" ]]; then
-  echo "$(date) | $appname already installed, nothing to do here"
-  exit 0
+    echo "$(date) | $appname already installed, nothing to do here"
+    exit 0
 else
 # Begin Script Body
 
-   echo ""
-   echo "##############################################################"
-   echo "# $(date) | Starting install of $appname"
-   echo "############################################################"
-   echo ""
+    echo ""
+    echo "##############################################################"
+    echo "# $(date) | Starting install of $appname"
+    echo "##############################################################"
+    echo ""
 
-   # Let's download the files we need and attempt to install...
-   echo "$(date) | Downloading $appname"
-   curl -L -f -o $tempfile $weburl
+    # Let's download the files we need and attempt to install...
+    echo "$(date) | Downloading $appname"
+    curl -L -f -o $tempfile $weburl
 
-   # Mount the dmg file...
-   echo "$(date) | Installing $appname"
-   hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
+    # Mount the dmg file...
+    echo "$(date) | Installing $appname"
+    hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
     # Sync the application and unmount once complete
     cp -R "$VOLUME"/*.app /Applications/
@@ -54,18 +54,19 @@ else
     #unmount the dmg
     hdiutil detach -quiet "$VOLUME"
 
-   if [ "$?" = "0" ]; then
+    #checking if the app was installed successfully
+    if [[ -a "/Applications/$app" ]]; then
       echo "$(date) | $appname Installed"
       echo "$(date) | Cleaning Up"
       rm -rf $tempfile
       exit 0
-   else
+    else
 
-   # Something went wrong here, either the download failed or the install Failed
-   # intune will pick up the exit status and the IT Pro can use that to determine what went wrong.
-   # Intune can also return the log file if requested by the admin
-      echo "$(date) | Failed to install $appname"
-      exit 1
-   fi
+        # Something went wrong here, either the download failed or the install Failed
+        # intune will pick up the exit status and the IT Pro can use that to determine what went wrong.
+        # Intune can also return the log file if requested by the admin
+        echo "$(date) | Failed to install $appname"
+        exit 1
+    fi
 
 fi
