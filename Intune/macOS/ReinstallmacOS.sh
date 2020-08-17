@@ -10,5 +10,5 @@ ver="10.15.6"
 
 echo "Downloading Operating System"
 /usr/sbin/softwareupdate --fetch-full-installer  --full-installer-version $ver
-"$START" --eraseinstall --agreetolicense --forcequitapps --newvolumename 'Macintosh HD'
+#"$START" --eraseinstall --agreetolicense --forcequitapps --newvolumename 'Macintosh HD'
  
