@@ -42,7 +42,7 @@ echo "############################################################"
 echo ""
 
 ## Is the app already installed?
-if [ -d "/Applications/$app.app" ]; then
+if [ -d "/Applications/$app" ]; then
 
   # App is already installed, we need to determine if it requires updating or not
   echo "$(date) | $appname already installed"
@@ -95,11 +95,11 @@ else
 fi
 
 #check if we're downloading and installing
-if [$install == "yes"]; then
+if [ $install == "yes" ]; then
 
     #download the file
     echo "$(date) | Downloading $appname"
-    url -L -f -o $tempfile $weburl
+    curl -L -f -o $tempfile $weburl
 
     # Mount the dmg file...
     echo "$(date) | Installing $appname"
@@ -112,19 +112,27 @@ if [$install == "yes"]; then
     hdiutil detach -quiet "$VOLUME"
 
     #checking if the app was installed successfully
-    if [[ -a "/Applications/$app" ]]; then
+    if [ "$?" = "0" ]; then
+        if [[ -a "/Applications/$app" ]]; then
 
-        echo "$(date) | $appname Installed"
-        echo "$(date) | Cleaning Up"
-        rm -rf $tempfile
+            echo "$(date) | $appname Installed"
+            echo "$(date) | Cleaning Up"
+            rm -rf $tempfile
 
-        echo "$(date) | Writing last modifieddate $lastmodified to $metafile"
-        echo "$lastmodified" > "$metafile"
+            if [ -d $metadir ]; then
+            else
+                echo "$(date) | Creating [$metadir]"
+                mkdir -p $metadir
+            fi
 
-        echo "$(date) | Fixing up permissions"
-        sudo chown -R root:wheel "/Applications/$appname.app"
+            echo "$(date) | Writing last modifieddate $lastmodified to $metafile"
+            echo "$lastmodified" > "$metafile"
 
-        exit 0
+            echo "$(date) | Fixing up permissions"
+            sudo chown -R root:wheel "/Applications/$app"
+
+            exit 0
+        fi
     else
 
         # Something went wrong here, either the download failed or the install Failed
