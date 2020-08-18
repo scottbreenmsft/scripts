@@ -24,7 +24,7 @@ weburl="https://aka.ms/meeclientmacos"
 appname="Minecraft Education Edition"
 app="minecraftpe.app"
 log="/var/log/installmee.log"
-processpath="/Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron"
+processpath="/Applications/Minecraft\: Education\ Edition.app/Contents/MacOS/minecraftpe"
 VOLUME="/tmp/InstallMEE"
 metadir="/Library/Intune/Scripts/Meta"
 metafile="$metadir/$appname.meta"
@@ -106,7 +106,7 @@ if [ $install == "yes" ]; then
     hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
     # Sync the application and unmount once complete
-    cp -R "$VOLUME"/*.app /Applications/
+    rsync -a "$VOLUME"/*.app "/Applications/"
 
     #unmount the dmg
     hdiutil detach -quiet "$VOLUME"
@@ -120,7 +120,7 @@ if [ $install == "yes" ]; then
             rm -rf $tempfile
 
             if [ -d $metadir ]; then
-
+                echo "$(date) | [$metadir] already exists"
             else
                 echo "$(date) | Creating [$metadir]"
                 mkdir -p $metadir
