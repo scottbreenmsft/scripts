@@ -120,6 +120,7 @@ if [ $install == "yes" ]; then
             rm -rf $tempfile
 
             if [ -d $metadir ]; then
+
             else
                 echo "$(date) | Creating [$metadir]"
                 mkdir -p $metadir
@@ -132,6 +133,9 @@ if [ $install == "yes" ]; then
             sudo chown -R root:wheel "/Applications/$app"
 
             exit 0
+        else
+            echo "$(date) | Failed to install $appname"
+            exit 1
         fi
     else
 
