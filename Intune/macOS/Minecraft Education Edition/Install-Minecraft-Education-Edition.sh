@@ -21,7 +21,7 @@
 
 tempfile="/tmp/mee.dmg"
 weburl="https://aka.ms/meeclientmacos"
-appname="Minecraft: Education Edition"
+appname="Minecraft Education Edition"
 app="minecraftpe.app"
 log="/var/log/installmee.log"
 processpath="/Applications/Visual\ Studio\ Code.app/Contents/MacOS/Electron"
@@ -95,7 +95,7 @@ else
 fi
 
 #check if we're downloading and installing
-if [$install == "yes"]
+if [$install == "yes"]; then
 
     #download the file
     echo "$(date) | Downloading $appname"
