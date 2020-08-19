@@ -31,7 +31,7 @@ metafile="$metadir/$appname.meta"
 lastmodified=$(curl -sIL "$weburl" | grep -i "last-modified" | awk '{$1=""; print $0}' | awk '{ sub(/^[ \t]+/, ""); print }' | tr -d '\r')
 # start logging
 
-#exec 1>> $log 2>&1
+exec 1>> $log 2>&1
 
 # Begin Script Body
 
