@@ -2,10 +2,10 @@
 This script is no longer requried as SDS now provisions Teams again as part of provisioning. See https://docs.microsoft.com/en-us/schooldatasync/whats-new-with-school-data-sync#school-data-sync-sds-adds-back-team-creation.
 
 ~~In March, SDS provisioning was changed to stop automatically creating Teams - https://docs.microsoft.com/en-us/schooldatasync/improved-class-and-roster-sync-for-teams.
-This sample script enumerates Office 365 Groups that were created using School Data Sync and creates a class team – replicating the functionality of SDS. 
+This sample script enumerates Office 365 Groups that were created using School Data Sync and creates a class team – replicating the functionality of SDS.~~
 
 
-~~See https://github.com/scottbreenmsft/scripts/blob/master/SDS/CreateTeamsFromSDSGroups/Script%20-%20Create%20Teams%20for%20SDS%20Synchronised%20Groups.pdf for more information.
+~~See https://github.com/scottbreenmsft/scripts/blob/master/SDS/CreateTeamsFromSDSGroups/Script%20-%20Create%20Teams%20for%20SDS%20Synchronised%20Groups.pdf for more information.~~
 
 References:
 + https://docs.microsoft.com/en-us/graph/teams-create-group-and-team
