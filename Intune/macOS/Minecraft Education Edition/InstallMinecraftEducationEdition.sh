@@ -102,14 +102,18 @@ if [ $install == "yes" ]; then
     echo "$(date) | Downloading $appname"
     curl -L -f -o $tempfile $weburl
 
-    # Mount the dmg file...
     echo "$(date) | Installing $appname"
+
+    # Mount the dmg file...
+    echo "$(date) | Mounting $tempfile to $VOLUME"
     hdiutil attach -nobrowse -mountpoint $VOLUME $tempfile
 
     # Sync the application and unmount once complete
+    echo "$(date) | Copying $VOLUME/*.app to /Applications"
     rsync -a "$VOLUME"/*.app "/Applications/"
 
     #unmount the dmg
+    echo "$(date) | Un-mounting $VOLUME"
     hdiutil detach -quiet "$VOLUME"
 
     #checking if the app was installed successfully
