@@ -20,14 +20,14 @@
 # Define variables
 
 tempfile="/tmp/mee.dmg"
+VOLUME="/tmp/InstallMEE"
 weburl="https://aka.ms/meeclientmacos"
 appname="Minecraft Education Edition"
 app="minecraftpe.app"
-log="/Library/Intune/Scripts/installMinecraftEducationEdition/installmee.log"
+logandmetadir="/Library/Intune/Scripts/installMinecraftEducationEdition"
+log="$logandmetadir/installmee.log"
+metafile="$logandmetadir/$appname.meta"
 processpath="minecraftpe"
-VOLUME="/tmp/InstallMEE"
-metadir="/Library/Intune/Scripts/installMinecraftEducationEdition"
-metafile="$metadir/$appname.meta"
 lastmodified=$(curl -sIL "$weburl" | grep -i "last-modified" | awk '{$1=""; print $0}' | awk '{ sub(/^[ \t]+/, ""); print }' | tr -d '\r')
 # start logging
 
