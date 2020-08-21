@@ -2,6 +2,8 @@
 
 This script is an example to show how to use [Intune Shell Scripting](https://docs.microsoft.com/en-us/mem/intune/apps/macos-shell-scripts) to install DMG applications. In this example the script will download the Minecraft Education Edition dmg file from the Microsoft download servers (https://aka.ms/meeclientmacos) and then install it onto the Mac. To reduce unnecessary re-downloads, the script monitors the date-modified attrbiute on the HTTP header of https://aka.ms/meeclientmacos rather than checking if the file stored there is actually changed.
 
+For Minecraft: Education Edition support, see [Minecraft: Education Edition Support](https://educommunity.minecraft.net/).
+
 ## Scenarios
 The script can be used for two scenarios:
 
