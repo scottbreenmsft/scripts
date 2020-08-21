@@ -15,7 +15,7 @@
 ## (including, without limitation, damages for loss of business profits, business interruption, loss of business information, or other pecuniary
 ## loss) arising out of the use of or inability to use the sample scripts or documentation, even if Microsoft has been advised of the possibility
 ## of such damages.
-## Feedback: scbree@microsoft.com
+## Feedback: neiljohn@microsoft.com
 
 # Define variables
 
@@ -23,10 +23,10 @@ tempfile="/tmp/mee.dmg"
 weburl="https://aka.ms/meeclientmacos"
 appname="Minecraft Education Edition"
 app="minecraftpe.app"
-log="/var/log/installmee.log"
+log="/Library/Intune/Scripts/installMinecraftEducationEdition/installmee.log"
 processpath="minecraftpe"
 VOLUME="/tmp/InstallMEE"
-metadir="/Library/Intune/Scripts/Meta"
+metadir="/Library/Intune/Scripts/installMinecraftEducationEdition"
 metafile="$metadir/$appname.meta"
 lastmodified=$(curl -sIL "$weburl" | grep -i "last-modified" | awk '{$1=""; print $0}' | awk '{ sub(/^[ \t]+/, ""); print }' | tr -d '\r')
 # start logging
