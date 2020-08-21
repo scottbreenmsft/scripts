@@ -124,13 +124,6 @@ if [ $install == "yes" ]; then
             echo "$(date) | Cleaning Up"
             rm -rf $tempfile
 
-            if [ -d $metadir ]; then
-                echo "$(date) | [$metadir] already exists"
-            else
-                echo "$(date) | Creating [$metadir]"
-                mkdir -p $metadir
-            fi
-
             echo "$(date) | Writing last modifieddate $lastmodified to $metafile"
             echo "$lastmodified" > "$metafile"
 
