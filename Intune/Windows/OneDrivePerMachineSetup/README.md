@@ -8,6 +8,7 @@ You can wrap this PowerShell script in a Win32 app and deploy it during a Window
 
 ## Install command
 powershell.exe -executionpolicy bypass -command ".\OneDriveSetupMachineInstall.ps1"
+
 ## Uninstall command
 I haven't written a process for uninstall yet, but you must provide an uninstall command:
 
