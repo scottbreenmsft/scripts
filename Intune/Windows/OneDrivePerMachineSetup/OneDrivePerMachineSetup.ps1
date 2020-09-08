@@ -1,19 +1,60 @@
-If (-not (get-item "hklm:\SOFTWARE\Microsoft\OneDrive" -ErrorAction SilentlyContinue)) {
+$ScriptName="OneDriveSetupMachineInstall.ps1"
+
+#check if onedrive machine setup is already installed
+If (-not (get-itempropertyvalue -PATH "hklm:\SOFTWARE\Microsoft\OneDrive\" -NAME "CurrentVersionPath" -ErrorAction SilentlyContinue)) {
+
+    #variables
     $downloadURL="https://go.microsoft.com/fwlink/?linkid=844652"
     $outputfile="$env:temp\OneDriveSetup.exe"
     $eventSource = "My Scripts"
+
+    #create an event log source to store the events
     New-EventLog -LogName Application -Source $eventSource -ErrorAction Ignore
 
-    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "downloading from $downloadURL to $outputfile"
+    #download the file
+    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : downloading from $downloadURL to $outputfile"
     Invoke-WebRequest -Uri $downloadURL -OutFile $outputfile
-    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "download complete"
+    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "$ScriptName : Download complete"
 
-    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "starting install"
-    $proc=Start-Process $outputfile -ArgumentList "/allusers /silent" -Wait  -PassThru
+    #check if onedrivesetup is already running
+    If (get-process onedrivesetup -ErrorAction SilentlyContinue) {
+        Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : OneDrive setup already running, waiting 30 seconds."
+        $finished=$false
+        $count=0
+        do {
+            start-sleep -Seconds 30
+            If (get-process onedrivesetup -ErrorAction SilentlyContinue) {
+                $count++
+                Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : OneDrive setup already running, waiting 30 seconds. Waited $count times"
+            } else {
+                $finished=$true
+            }
+        } until ($finished -or ($count -ge 10))
+    }
+   
 
+    #start setup
+    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "$ScriptName : Starting install"
+    $proc=Start-Process $outputfile -ArgumentList "/allusers /silent" -Wait -PassThru
+
+    #wait for setup to complete (sometimes it creates additional processes to complete setup)
+    If (get-process onedrivesetup -ErrorAction SilentlyContinue) {
+        Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : OneDrive setup still running, waiting 30 seconds."
+        $finished=$false
+        $count=0
+        do {
+            start-sleep -Seconds 30
+            If (get-process onedrivesetup -ErrorAction SilentlyContinue) {
+                $count++
+                Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : OneDrive setup still running, waiting 30 seconds. Waited $count times"
+            } else {
+                $finished=$true
+            }
+        } until ($finished -or ($count -ge 10))
+    }
     
-    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "install complete Exit code: $($proc.ExitCode)"
+    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "$ScriptName : install complete Exit code: $($proc.ExitCode)"
     exit $proc.ExitCode
 } else {
-    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "OneDrive already installed per-machine"
+    Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : OneDrive already installed per-machine"
 }
