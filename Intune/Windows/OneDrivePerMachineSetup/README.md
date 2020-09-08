@@ -15,7 +15,6 @@ powershell.exe -executionpolicy bypass -command ".\OneDriveSetupMachineInstall.p
 
 ## Detection method
 
-Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OneDrive
-
-key exists
-Associated with a 32-bit app on 64-bit clients: Yes
+- Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OneDrive
+- key exists
+- Associated with a 32-bit app on 64-bit clients: Yes
