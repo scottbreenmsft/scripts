@@ -16,6 +16,7 @@ powershell.exe -executionpolicy bypass -command .\OneDrivePerMachineSetup.ps1
 
 ## Detection method
 
-- Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OneDrive\CurrentVersionPath
+- Registry key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OneDrive\
+- Registry value: CurrentVersionPath
 - Value exists
 - Associated with a 32-bit app on 64-bit clients: Yes
