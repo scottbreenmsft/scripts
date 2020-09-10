@@ -8,6 +8,7 @@ To limit user access, you can change the application to require user assignment.
 3. Find and click on **Microsoft Intune PowerShell** in the list
 4. Select **Properties**
 5. Change **User assignment required?** to **Yes**
+  ![Change User assignment required to Yes](https://github.com/scottbreenmsft/scripts/blob/master/Intune/ControlIntunePowerShell/Intune-PowerShell-User-Assignment.png)
 6. Click **Save**
 
 ### Add or remove users
@@ -17,3 +18,4 @@ To add or remove users of the Microsoft Intune PowerShell application:
 3. Find and click on **Microsoft Intune PowerShell** in the list
 4. Select **Users and groups**
 5. Modify access as required
+  ![Add a user](https://github.com/scottbreenmsft/scripts/blob/master/Intune/ControlIntunePowerShell/Intune-PowerShell-Add-User.png)
