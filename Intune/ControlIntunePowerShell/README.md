@@ -1,4 +1,4 @@
-## Limit access to Intune PowerShell
+### Limit access to Intune PowerShell
 By default, once a Global Administrator approves the Intune PowerShell Azure AD Application for access to a tenant, all users are granted access. You can easily change the App Registration so that only users who are given access can use the application.
 
 To limit user access, you can change the application to require user assignment. To do this:
@@ -11,7 +11,7 @@ To limit user access, you can change the application to require user assignment.
   ![Change User assignment required to Yes](https://github.com/scottbreenmsft/scripts/blob/master/Intune/ControlIntunePowerShell/Intune-PowerShell-User-Assignment.png)
 6. Click **Save**
 
-### Add or remove users
+#### Add or remove users
 To add or remove users of the Microsoft Intune PowerShell application:
 1. Open the [Azure Active Directory Admin Console](http://aad.portal.azure.com)
 2. Click on **Enterprise Applications**
