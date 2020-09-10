@@ -1,5 +1,5 @@
 ### Control access to Intune PowerShell
-By default, once a Global Administrator approves the [Microsoft Intune PowerShell](https://docs.microsoft.com/en-us/samples/microsoftgraph/powershell-intune-samples/intune-graph-samples/ ) Azure AD Application for access to a tenant, all users are granted access. You can easily change the App Registration so that only users who are given access can use the application.
+By default, once a Global Administrator consents for the [Microsoft Intune PowerShell](https://docs.microsoft.com/en-us/samples/microsoftgraph/powershell-intune-samples/intune-graph-samples/ ) Azure AD Application for access to a tenant, all users are granted access. You can easily change the App Registration so that only users who are given access can use the application.
 
 #### Limit access
 To limit user access, you can change the application to require user assignment. To do this:
