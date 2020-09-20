@@ -13,6 +13,7 @@ Version History
 0.6    7/02/2020     Changed two attributes to be script parameters to work with Azure Automation
 0.7    8/05/2020     Added paging to Get-Devices and Get-GroupMembers functions
 0.8    19/06/2020    Updated to re-auth during execution if required with new function - CheckAuthToken
+0.9    21/09/2020    Added $personalOnly parameter (set to to $false by default) and updated script to work with primary user rather than enrolled by user
 #>
 
 ####################################################
