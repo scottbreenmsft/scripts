@@ -14,6 +14,7 @@ Version History
 0.7    8/05/2020     Added paging to Get-Devices and Get-GroupMembers functions
 0.8    19/06/2020    Updated to re-auth during execution if required with new function - CheckAuthToken
 0.9    21/09/2020    Added $personalOnly parameter (set to to $false by default) and updated script to work with primary user rather than enrolled by user
+0.10   21/09/2020    Fixed an issue that is caused by devices with an Azure AD Device ID of 00000000-0000-0000-0000-000000000000 by excluding them
 #>
 
 ####################################################
@@ -638,15 +639,15 @@ IF ($filterByEnrolledWithinMinutes -ne 0) {
 
 write-output "$($devices.count) returned."
 foreach ($device in $devices) {
+    #lets make sure our auth token is still valid
     CheckAuthToken
 
+    #lets get the primary user of the device
     $PrimaryUser=Get-DeviceUsers $device.id
 
-
-    If ($device.userid) {
+    #devices without a valid Azure AD Device ID cause script issues and need to be excluded
+    If ($PrimaryUser -and $device.azureADDeviceId -ne "00000000-0000-0000-0000-000000000000") {
         write-output "Processing device: $($device.devicename). Serial: $($device.serialnumber). AADDeviceID= $($device.azureADDeviceId). User: $PrimaryUser"
-
-        
 
         #check if we have the user group membership in our user group cache
         If ($cachedUserGroupMemberships.UserID -contains $PrimaryUser) {
