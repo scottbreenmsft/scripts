@@ -34,6 +34,9 @@ $tenant = "<tenant>.onmicrosoft.com"
 $clientId = "<clientID>"
 $clientSecret = "<client secret>"
 
+#set to true to filter the devices retrieved to personal devices
+$personalOnly=$false
+
 #Runbook details if running in Azure Automation to detect last job run time and to ensure not conflicting with running jobs. 
 #If the script is being run from an onpremises server or manually, just leave these attributes as the default, the script will 
 #ignore them if it isn’t being run in the context of Azure Automation.
@@ -355,13 +358,24 @@ param
     If ($filterByEnrolledWithinMinutes -and $filterByEnrolledWithinMinutes -ne 0) {
         $minutesago = "{0:s}" -f (get-date).addminutes(0-$filterByEnrolledWithinMinutes) + "Z"
         $filter = "?`$filter=enrolledDateTime ge $minutesAgo"
+
+        If ($personalOnly) {
+            $filter ="$filter and managedDeviceOwnerType eq 'Personal'"
+        }
     } else {
-        $filter=""
+        If ($personalOnly) {
+            $filter ="?`$filter=managedDeviceOwnerType eq 'Personal'"
+        } else {
+            $filter = ""
+        }
     }
 
     if ($enrolledSinceDate) {
         $formattedDateTime ="{0:s}" -f (get-date $enrolledSinceDate) + "Z"
         $filter = "?`$filter=enrolledDateTime ge $formattedDateTime"
+        If ($personalOnly) {
+            $filter ="$filter and managedDeviceOwnerType eq 'Personal'"
+        }
     }
     
     try
@@ -418,11 +432,62 @@ param
 
 ####################################################
 
+Function Get-DeviceUsers {
+	
+[cmdletbinding()]
+
+param
+(
+    $deviceID
+)
+
+#https://docs.microsoft.com/en-us/graph/query-parameters
+
+	
+	$graphApiVersion = "beta"
+	$Resource = "deviceManagement/managedDevices('$deviceID')/users"
+
+
+
+	
+	try
+	{
+        
+		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
+		(Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get).value.id
+
+	}
+	
+	catch
+	{
+		
+		$ex = $_.Exception
+        If ($ex.Response) {
+		    $errorResponse = $ex.Response.GetResponseStream()
+		    $reader = New-Object System.IO.StreamReader($errorResponse)
+		    $reader.BaseStream.Position = 0
+		    $reader.DiscardBufferedData()
+		    $responseBody = $reader.ReadToEnd();
+		    write-verbose "Response content:`n$responseBody" 
+            Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
+        } else {
+            write-error $ex.message
+        }
+		break
+		
+	}
+	
+}
+
+
+
+####################################################
+
 ####################################################
 
 
 
-        $minutesago = "{0:s}" -f (get-date).addminutes(0-$filterByEnrolledWithinMinutes) + "Z"
+
 Function Get-AADDevice(){
 
 <#
@@ -572,25 +637,30 @@ IF ($filterByEnrolledWithinMinutes -ne 0) {
 
 write-output "$($devices.count) returned."
 foreach ($device in $devices) {
-    If ($device.userid) {
-        write-output "Processing device: $($device.devicename). Serial: $($device.serialnumber). AADDeviceID= $($device.azureADDeviceId). User: $($device.userPrincipalName)"
+    CheckAuthToken
 
-        CheckAuthToken
+    $PrimaryUser=Get-DeviceUsers $device.id
+
+
+    If ($device.userid) {
+        write-output "Processing device: $($device.devicename). Serial: $($device.serialnumber). AADDeviceID= $($device.azureADDeviceId). User: $PrimaryUser"
+
+        
 
         #check if we have the user group membership in our user group cache
-        If ($cachedUserGroupMemberships.UserID -contains $device.userid) {
+        If ($cachedUserGroupMemberships.UserID -contains $PrimaryUser) {
             foreach ($cachedGroup in $cachedUserGroupMemberships) {
-                IF ($cachedGroup.userid -eq $device.userId) {
-                    write-verbose "`tusing user group membership cache for user $($device.userId)"
+                IF ($cachedGroup.userid -eq $PrimaryUser) {
+                    write-verbose "`tusing user group membership cache for user $($PrimaryUser)"
                     $userGroupMemerships=$cachedGroup.Groups
                 }
             }
         } else {
 
             #keep a cache of the user group membership to reduce graph queries
-            $userGroupMemership=Get-UserGroups -id $device.userId
+            $userGroupMemership=Get-UserGroups -id $PrimaryUser
             $hash = @{            
-                UserID          = $device.userid                
+                UserID          = $PrimaryUser                
                 Groups            = $userGroupMemership
                 }                                              
             $cachedUserGroupMemberships+=(New-Object PSObject -Property $hash)
@@ -604,7 +674,7 @@ foreach ($device in $devices) {
                 foreach ($deviceGroup in $UserGroupRoleGroupMapping) {
                     If ($deviceGroup.UserGroupID -eq $userGroup) {
 
-                        write-verbose "`tuser $($device.userid) is in a group that matches a scope tag assignment. Group ID is $userGroup."
+                        write-verbose "`tuser $($PrimaryUser) is in a group that matches a scope tag assignment. Group ID is $userGroup."
 
                         #get group members if needed and cache
                         if (-not $deviceGroup.ScopeTagGroupMembers) {
@@ -635,5 +705,4 @@ foreach ($device in $devices) {
 
     }
 }
-
 
