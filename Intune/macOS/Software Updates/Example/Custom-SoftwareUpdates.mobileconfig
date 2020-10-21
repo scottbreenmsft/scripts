@@ -27,8 +27,6 @@
 			<true/>
 			<key>CriticalUpdateInstall</key>
 			<true/>
-			<key>ManagedDeferredInstallDelay</key>
-			<integer>15</integer>
 			<key>PayloadDisplayName</key>
 			<string>Software Update</string>
 			<key>PayloadIdentifier</key>
@@ -41,10 +39,7 @@
 			<string>D70FE058-277D-4FF5-A1E9-7CD922731576</string>
 			<key>PayloadVersion</key>
 			<integer>1</integer>
-			<key>SUDisableEVCheck</key>
-			<false/>
-			<key>forceDelayedSoftwareUpdates</key>
-			<true/>
+
 		</dict>
 	</array>
 </dict>
