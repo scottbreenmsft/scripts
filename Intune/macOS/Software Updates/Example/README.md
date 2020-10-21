@@ -19,7 +19,7 @@ The profile contains the following attributes which can be edited as required or
  - **PayloadUUID**: 20285685-7DBD-4830-B4F8-57E118BBEC0A
  - **PayloadVersion**: 1
  
-See [Device Management Profile - TopLevel](https://developer.apple.com/documentation/devicemanagement/toplevel) for details.
- 
 The profile contains the following attributes which cannot be edited:
  - **PayloadType**: Configuration
+
+See [Device Management Profile - TopLevel](https://developer.apple.com/documentation/devicemanagement/toplevel) for details.
