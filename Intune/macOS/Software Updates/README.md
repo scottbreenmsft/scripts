@@ -22,14 +22,15 @@ macOS allows the deployment of custom profiles to configure settings. Software U
 ### Configure the profile
 You can create a custom profile:
  - Manually
- - Using tools such as (insert tool) or (insert tool)
+ - Apple Profile Manager
+ - Third-party profile creation tools
+ 
+ You can find an example custom profile here:
+ - [Custom - Software Updates.mobileconfig](Example/Custom-SoftwareUpdates.mobileconfig)
 
 For reference use:
  - [Software Update - Apple Device Management Documentation](https://developer.apple.com/documentation/devicemanagement/softwareupdate).
  - [Configuring Multiple Devices Using Profiles](https://developer.apple.com/documentation/devicemanagement/configuring_multiple_devices_using_profiles).
-
-You can find an example custom profile here:
- - [Custom - Software Updates.mobileconfig](Example/Custom-SoftwareUpdates.mobileconfig)
 
 ### Deploy the profile
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
