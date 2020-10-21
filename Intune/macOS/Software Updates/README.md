@@ -30,7 +30,7 @@ You can create a custom profile:
  - Third-party profile creation tools
  
  You can find an example custom profile here:
- - [Custom - Software Updates.mobileconfig](Example/Custom-SoftwareUpdates.mobileconfig)
+ - [Custom - Software Updates.mobileconfig](Example)
 
 ### 2. Deploy the profile
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
