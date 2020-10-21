@@ -19,7 +19,8 @@ Insert documentation here..
 ## Configuring Software Updates on macOS
 macOS allows the deployment of custom profiles to configure settings. Software Updates on macOS can be configured using custom profiles. 
 
-![Software Updates in macOS](/media/SoftwareUpdates-AutoUpdate.png)
+![Software Updates in macOS](media/SoftwareUpdates-AutoUpdate.png)
+![Software Updates in macOS - Configurfation](media/SoftwareUpdates-Config.png)
 
 ### Configure the profile
 You can create a custom profile:
