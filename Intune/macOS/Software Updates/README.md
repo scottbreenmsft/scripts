@@ -21,7 +21,7 @@ macOS allows the deployment of custom profiles to configure settings. Software U
 
    ![Software Updates in macOS - Configurfation](media/SoftwareUpdates-Config.png)
 
-### Configure the profile
+### 1. Configure the profile
 You can create a custom profile:
  - Manually
  - Apple Profile Manager
@@ -34,8 +34,8 @@ For reference use:
  - [Software Update - Apple Device Management Documentation](https://developer.apple.com/documentation/devicemanagement/softwareupdate).
  - [Configuring Multiple Devices Using Profiles](https://developer.apple.com/documentation/devicemanagement/configuring_multiple_devices_using_profiles).
 
-### Deploy the profile
+### 2. Deploy the profile
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
 
-### Configure Deferral
+### 3. Optiona: Configure Defer software updates restiction
 You can control how many days after release a software updates is made available to users or installs automatically using the **Defer software updates** setting in [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
