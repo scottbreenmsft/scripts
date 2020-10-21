@@ -6,12 +6,6 @@
 	<string>macOS - Software Updates</string>
 	<key>PayloadIdentifier</key>
 	<string>com.custom.SoftwareUpdates</string>
-	<key>PayloadOrganization</key>
-	<string>Custom</string>
-	<key>PayloadRemovalDisallowed</key>
-	<true/>
-	<key>PayloadScope</key>
-	<string>System</string>
 	<key>PayloadType</key>
 	<string>Configuration</string>
 	<key>PayloadUUID</key>
