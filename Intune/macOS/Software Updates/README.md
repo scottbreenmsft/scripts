@@ -31,7 +31,7 @@ As an example, to configure and force the following settings:
  - Install system data files and security updates
  
  You could use a profile with the following XML:
- - [Example/Custom - Software Updates.mobileconfig](Custom-SoftwareUpdates.mobileconfig)
+ - [Custom - Software Updates.mobileconfig](Example/Custom-SoftwareUpdates.mobileconfig)
 
 ### Deploy the profile
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
