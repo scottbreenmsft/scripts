@@ -11,9 +11,11 @@ Software updates on macOS can be managed by Intune using 2 options.
 Insert documentation here..
    
 ## Configuring Software Updates on macOS
-macOS allows the deployment of custom profiles. The list of profiles and settings are available in the [Software Update - Apple Device Management Documentation](https://developer.apple.com/documentation/devicemanagement/softwareupdate).
+macOS allows the deployment of custom profiles to configure settings. Software Updates on macOS can be configured using custom profiles. The list of profiles and settings are available in the [Software Update - Apple Device Management Documentation](https://developer.apple.com/documentation/devicemanagement/softwareupdate).
 
-As an example, to configure adn force the following settings:
+For information on creating a configuraiton profile, see [Configuring Multiple Devices Using Profiles](https://developer.apple.com/documentation/devicemanagement/configuring_multiple_devices_using_profiles).
+
+As an example, to configure and force the following settings:
  - Automatically keep my Mac up-to-date
  - Check for updates
  - Download new updates when available
@@ -22,7 +24,6 @@ As an example, to configure adn force the following settings:
  - Install system data files and security updates
  
  You could use a profile with the following XML:
- 
  - [Custom - Software Updates.mobileconfig](Custom-SoftwareUpdates.mobileconfig)
 
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
