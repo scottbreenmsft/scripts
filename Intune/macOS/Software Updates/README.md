@@ -14,7 +14,7 @@ Insert documentation here..
 > This feature triggers the installation of updates during a device check-in. If reboot are required, they may occur without prompting the user. 
 
 > [!IMPORTANT]
-> This feature ignores the **Defer software updates** setting a [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
+> This feature ignores the **Defer software updates** setting in [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
    
 ## Configuring Software Updates on macOS
 macOS allows the deployment of custom profiles to configure settings. Software Updates on macOS can be configured using custom profiles. The list of profiles and settings are available in the [Software Update - Apple Device Management Documentation](https://developer.apple.com/documentation/devicemanagement/softwareupdate).
@@ -37,4 +37,4 @@ As an example, to configure and force the following settings:
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
 
 ### Configure Deferral
-You can control how many days after release a software updates is made available to users or installs automatically using the **Defer software updates** setting in a [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
+You can control how many days after release a software updates is made available to users or installs automatically using the **Defer software updates** setting in [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
