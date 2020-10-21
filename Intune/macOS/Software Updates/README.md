@@ -22,6 +22,7 @@ As an example, to configure adn force the following settings:
  - Install system data files and security updates
  
  You could use a profile with the following XML:
- [Custom - Software Updates.mobileconfig](Custom-SoftwareUpdates.mobileconfig)
+ 
+ - [Custom - Software Updates.mobileconfig](Custom-SoftwareUpdates.mobileconfig)
 
 The custom XML file can then be uploaded to Intune for deployment using a [macOS Custom profile](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
