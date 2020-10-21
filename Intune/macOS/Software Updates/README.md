@@ -11,7 +11,7 @@ Software updates on macOS can be managed by Intune using 2 options.
 Insert documentation here..
 
 > [!NOTE]
-> This feature triggers the installation of updates during a device check-in. If reboot are required, they may occur without prompting the user. 
+> This feature triggers the installation of updates during a device check-in. If reboots are required, they may occur without prompting the user. 
 
 > [!IMPORTANT]
 > This feature ignores the **Defer software updates** setting in [macOS - Device Restrictions profile](https://docs.microsoft.com/en-us/mem/intune/configuration/device-restrictions-macos#settings-apply-to-user-approved-device-enrollment-automated-device-enrollment-supervised).
