@@ -1,7 +1,13 @@
 # Sync-AADAdminUnitMembership
 
-This sample script synchronises the user membership of an Administrative Unit with one or more groups.
+This sample script synchronises the user membership of an Administrative Unit with one or more groups based on name templates for the groups and administrative unit. The script will only add and remove users that have an @odata.type of #microsoft.graph.user.
 
+The is written under the assumption that the administrative unit and groups have attributes which contain the school code. The allows the script to match the groups against the adminitrative units without requiring a mapping file. The script supports the following attributes:
+
+ | Object Type | Supported Attributes | 
+ | Administrative Unit | displayName | 
+ | Group | displayName <br /> mail | 
+ 
 ## Script Parameters
 
  - **Tenant** - The domain name for your Azure tenant. eg. tenant.onmicrosoft.com
