@@ -39,7 +39,7 @@ Follow the steps in [Option 1: Upload a certificate](https://docs.microsoft.com/
 Update the script parameters:
  - **CertificateThumbprint** - The thumbprint of the certificate
 
-### Step 4. Add API permissions
+### Step 3. Add API permissions
 
 1. Go to your application in the **Azure portal – App registrations** experience
 2. Locate the **API Permissions** section, and within the API permissions click **Add a permission**.
@@ -50,6 +50,6 @@ Update the script parameters:
 4. Save the permissions.
 5. Grant admin consent for the permissions.
 
-### Step 5. Update script parameters
+### Step 4. Update script parameters
 
 Update the parameters as per the certificates and application that you created.
