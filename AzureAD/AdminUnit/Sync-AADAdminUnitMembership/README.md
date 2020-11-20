@@ -8,6 +8,9 @@ The script is written under the assumption that the administrative unit and grou
  - Groups
    - displayName
    - mail
+   
+**WARNING**
+This script adds AND removes users so if the groups are empty or can't be found, the script will remove all users from the administrative unit. It's critical you test the script for you environment in a test environment, understand how it works and customise it for your needs before executing it in production.
 
 ## Script Parameters
 
@@ -15,6 +18,9 @@ The script is written under the assumption that the administrative unit and grou
  - **ClientID** - The Client ID of the Azure AD App Registration you'll use for authentication. Once the app registration is created, you can get the client ID using these instructions - [Get tenant and app ID values for signing in](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in).
  - **CertificateThumbprint** - The thumbprint of the certificate you're using for authentication
  - **CertificateLocation** - The location of the certificate in the local certificate store
+ - **GroupNameTemplates** - An array of strings that contains the group names you want to sync with a the corresponding administrative unit. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
+  - **AdminUnitTemnplate** - The name template for the administrative unit to look up for the school code. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
+  - **SchoolCodes** - An array of strings that correspond to the school codes you want to action.
 
 ## Setup Azure AD Authentication
 
