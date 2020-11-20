@@ -16,9 +16,9 @@ Version History
 #Parameters
 ####################################################
 #Azure AD  App Details for Auth
-$tenant = "M365EDU517083.onmicrosoft.com"
-$clientId = "ef5ae9e3-44a8-4ae0-a343-07e3250d0657"
-$CertificateThumbprint="F27907F4C8FBF1C4FCA272DEA39F72414DD27AD7"
+$tenant = "tenant.onmicrosoft.com"
+$clientId = "ClientGUID"
+$CertificateThumbprint="CertThumbprint"
 $CertificateLocation="cert:\currentuser\my\$CertificateThumbprint"
 
 #Add each of the group name templates you want to search for and add users from
