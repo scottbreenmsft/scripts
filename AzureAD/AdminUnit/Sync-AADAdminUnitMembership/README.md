@@ -14,10 +14,10 @@ This script adds AND removes users so if the groups are empty or can't be found,
 
 ## Script Parameters
 
- - **Tenant** - The domain name for your Azure tenant. eg. tenant.onmicrosoft.com
+ - **Tenant** - The domain name for your Azure tenant. eg. tenant.onmicrosoft.com.
  - **ClientID** - The Client ID of the Azure AD App Registration you'll use for authentication. Once the app registration is created, you can get the client ID using these instructions - [Get tenant and app ID values for signing in](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in).
- - **CertificateThumbprint** - The thumbprint of the certificate you're using for authentication
- - **CertificateLocation** - The location of the certificate in the local certificate store
+ - **CertificateThumbprint** - The thumbprint of the certificate you're using for authentication.
+ - **CertificateLocation** - The location of the certificate in the local certificate store.
  - **GroupNameTemplates** - An array of strings that contains the group names you want to sync with a the corresponding administrative unit. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
   - **AdminUnitTemnplate** - The name template for the administrative unit to look up for the school code. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
   - **SchoolCodes** - An array of strings that correspond to the school codes you want to action.
