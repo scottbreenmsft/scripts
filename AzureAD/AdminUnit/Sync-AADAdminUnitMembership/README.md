@@ -25,7 +25,7 @@ This script adds AND removes users so if the groups are found but are empty, the
  - **GroupNameTemplates** - An array of strings that contains the group names you want to sync with a the corresponding administrative unit. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
  - **groupattribute** - The attribute on the groups to match the name against (eg. displayName, mail, mailNickname).
   - **AdminUnitTemnplate** - The name template for the administrative unit to look up for the school code. Use %SchoolCode% as the part of the string that will contain the School Code which is replaced during script execution.
-  - **$AdminUnitAttribute** - The attribute on administrative units to match against (i.e. description or displayName).
+  - **AdminUnitAttribute** - The attribute on administrative units to match against (i.e. description or displayName).
   - **SchoolCodes** - An array of strings that correspond to the school codes you want to action.
 
 ## Setup Azure AD Authentication
