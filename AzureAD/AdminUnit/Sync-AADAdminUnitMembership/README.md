@@ -1,6 +1,6 @@
 # Sync-AADAdminUnitMembership
 
-If for some reason your organisation is unable to take advantage of [School Data Sync](https://docs.microsoft.com/en-us/schooldatasync/overview-of-school-data-sync) which can create and manage administrative units based on the data you synchronise, you can use this script to populate users in administrative units.
+If for some reason your organisation is unable to take advantage of [School Data Sync](https://docs.microsoft.com/en-us/schooldatasync/overview-of-school-data-sync) which can create and update administrative units based on the data you synchronise, you can use this script to populate users in administrative units.
 
 This sample script synchronises the user membership of an Administrative Unit with one or more groups based on name templates for the groups and administrative unit. The script will only add and remove users that have an @odata.type of #microsoft.graph.user.
 
