@@ -2,12 +2,16 @@
 
 This sample script synchronises the user membership of an Administrative Unit with one or more groups based on name templates for the groups and administrative unit. The script will only add and remove users that have an @odata.type of #microsoft.graph.user.
 
-The script is written under the assumption that the administrative unit and groups have attributes which contain the school code. This allows the script to match the groups against the adminitrative units without requiring a mapping file. The script supports the following attributes:
+The script is written under the assumption that the administrative unit and groups have attributes which contain the school code. This allows the script to match the groups against the adminitrative units without requiring a mapping file. 
+
+Tested attributes:
  - Administrative Units
    - displayName
+   - description
  - Groups
    - displayName
    - mail
+   - mailnickname
    
 **WARNING**
 This script adds AND removes users so if the groups are empty or can't be found, the script will remove all users from the administrative unit. It's critical you test the script for you environment in a test environment, understand how it works and customise it for your needs before executing it in production.
