@@ -24,7 +24,7 @@ This script adds AND removes users so if the groups are empty or can't be found,
 
 ## Setup Azure AD Authentication
 
-The script uses Azure AD App Registration and certificate authentication so that it can be set up as a scheduled task and run on a schedule.
+The script uses Azure AD App Registration and certificate authentication so that it can be set up as a scheduled task and run on a schedule. Using an App Registration and API permissions also allows you to constrain the permissions of the script to only read users, read groups and modify administrative units.
 
 To set up the authentication for this script you will need a certificate (which can be self signed, in the certificate store of the user account running the task). 
 
