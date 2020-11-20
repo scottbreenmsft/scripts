@@ -14,7 +14,7 @@ Tested attributes:
    - mailnickname
    
 **WARNING**
-This script adds AND removes users so if the groups are empty or can't be found, the script will remove all users from the administrative unit. It's critical you test the script for you environment in a test environment, understand how it works and customise it for your needs before executing it in production.
+This script adds AND removes users so if the groups are found but are empty, the script will **remove** all users from the administrative unit. It's critical you test the script for you environment in a test environment, understand how it works and customise it for your needs before executing it in production.
 
 ## Script Parameters
 
