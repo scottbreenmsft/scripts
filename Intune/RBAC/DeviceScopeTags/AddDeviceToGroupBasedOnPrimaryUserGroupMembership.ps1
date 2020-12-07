@@ -654,7 +654,7 @@ foreach ($device in $devices) {
             foreach ($cachedGroup in $cachedUserGroupMemberships) {
                 IF ($cachedGroup.userid -eq $PrimaryUser) {
                     write-verbose "`tusing user group membership cache for user $($PrimaryUser)"
-                    $userGroupMemerships=$cachedGroup.Groups
+                    $userGroupMemership=$cachedGroup.Groups
                 }
             }
         } else {
