@@ -26,6 +26,7 @@ $CurrentPlatform=$RegKeys.Platform
 IF ($Platform -ne $CurrentPlatform) {
     write-host "Platform: '$Platform' does not match '$CurrentPlatform'"
     $NotDetected=$true
+}
 
 #check installed products
 $CurrentProductReleaseIDs=$RegKeys.ProductReleaseIDs
