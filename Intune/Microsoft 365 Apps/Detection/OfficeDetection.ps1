@@ -65,6 +65,7 @@ IF ($ProductID -eq "O365ProPlusRetail") {
 
 #check detection
 If ($NotDetected) {
+    Write-host "Office not detected"
     exit 1
 } else {
     Write-host "Detected successfully"
