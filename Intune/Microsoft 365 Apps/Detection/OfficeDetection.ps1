@@ -1,12 +1,6 @@
 ###########################
 #Script Variables
 ###########################
-#Excluded Apps
-#array of strings. eg. @("groove","teams")
-#list: https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element
-## NOTE This is only checked with the product ID is O365ProPlusRetail
-$ExcludedApps=@("groove","lync","OneDrive","Bing")
-
 #ProductReleaseID of the product you want to check for
 #list: https://docs.microsoft.com/en-us/office365/troubleshoot/installation/product-ids-supported-office-deployment-click-to-run#:~:text=Table%202%20%20%20%20Product%20%20,%20%20SkypeforBusinessEntryRetail%20%203%20more%20rows%20
 $ProductID="O365ProPlusRetail"
@@ -14,6 +8,12 @@ $ProductID="O365ProPlusRetail"
 #Platform
 #The platform you want to be installed. x64 or x86.
 $Platform="x64"
+
+#Excluded Apps
+#array of strings. eg. @("groove","teams")
+#list: https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element
+## NOTE This is only checked when the product ID is O365ProPlusRetail
+$ExcludedApps=@("groove","lync","OneDrive","Bing")
 ###########################
 
 #Office key
