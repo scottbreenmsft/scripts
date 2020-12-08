@@ -5,7 +5,7 @@
 #Excluded Apps
 #array of strings. eg. @("groove","teams")
 #list: https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element
-$ExcludedApps=@("groove","lync",)
+$ExcludedApps=@("groove","lync","OneDrive","Bing")
 
 #ProductReleaseID of the product you want to check for
 #list: https://docs.microsoft.com/en-us/office365/troubleshoot/installation/product-ids-supported-office-deployment-click-to-run#:~:text=Table%202%20%20%20%20Product%20%20,%20%20SkypeforBusinessEntryRetail%20%203%20more%20rows%20
