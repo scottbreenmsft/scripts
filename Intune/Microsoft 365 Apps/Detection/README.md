@@ -11,7 +11,7 @@ Modify the variables at the start of the script as per your requirements.
  - **ExcludedApps** - The list of apps to exclude from installation when installing O365ProPlusRetail. For a list of options, see https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element.
  
 ### Excluded Apps
-The list of apps to exclude from installation when installing OfficeProPlusRetail. For a list of options, see https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element.
+The list of apps to exclude from installation when installing O365ProPlusRetail. For a list of options, see https://docs.microsoft.com/en-us/deployoffice/office-deployment-tool-configuration-options#id-attribute-part-of-excludeapp-element.
 
 **NOTE This is only checked when the product ID is O365ProPlusRetail**
 
