@@ -534,7 +534,7 @@ foreach ($roleDefinition in $roleDefinitions) {
                 write-host "`tUser found in Azure AD Group $groupname" -ForegroundColor Green
                 If ($scopes) {
                     foreach ($scope in $scopes) {
-                        write-host $scope.displayName
+                        #write-host $scope.displayName
                         $Object = New-Object PSObject -Property @{
 	                        Role=$roleDefinition.displayName
                             Assignment=$assignment.displayName
