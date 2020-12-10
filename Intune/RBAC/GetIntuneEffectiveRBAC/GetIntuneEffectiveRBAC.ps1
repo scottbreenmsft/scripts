@@ -6,6 +6,7 @@ See LICENSE in the project root for license information.
 
 Version History
 0.1    Scott Breen    3/12/2019     Initial version
+0.2    Scott Breen    10/12/2020    Updated to work with roles that do not have scope tags assigned
 #>
 
 ####################################################
@@ -523,14 +524,14 @@ foreach ($roleDefinition in $roleDefinitions) {
     $RoleAssignments=Get-RoleAssignments -id $roleDefinition.id
     
     foreach ($assignment in $RoleAssignments) {
-        write-host "`t$($assignment.displayName)"
+        write-host "`tRole assignment name: $($assignment.displayName)"
         $RoleAssignment=Get-RoleAssignment $assignment.id
-        write-host "`t$($RoleAssignment.members)"
+        write-host "`tRole assignment admin group IDs: $($RoleAssignment.members)"
         $scopes=get-roleScopeTags -definition $roleDefinition.id -assignment $assignment.id
         foreach ($Member in $RoleAssignment.members) {
             if ($groups -contains $Member) {
                 $groupname=(Get-AzureADGroupNameGraph $member).displayName
-                write-host "`tfound $groupname"
+                write-host "`tUser found in Azure AD Group $groupname" -ForegroundColor Green
                 If ($scopes) {
                     foreach ($scope in $scopes) {
                         write-host $scope.displayName
