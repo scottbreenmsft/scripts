@@ -519,24 +519,34 @@ $roleDefinitions=Get-RoleDefinitions
 $relevantAssignments=@()
 foreach ($roleDefinition in $roleDefinitions) {
     write-host ""
-    write-host $roleDefinition.displayName
+    write-host "checking $($roleDefinition.displayName)"
     $RoleAssignments=Get-RoleAssignments -id $roleDefinition.id
     
     foreach ($assignment in $RoleAssignments) {
-        write-host $assignment.displayName
+        write-host "`t$($assignment.displayName)"
         $RoleAssignment=Get-RoleAssignment $assignment.id
-        write-host $RoleAssignment.members
+        write-host "`t$($RoleAssignment.members)"
         $scopes=get-roleScopeTags -definition $roleDefinition.id -assignment $assignment.id
         foreach ($Member in $RoleAssignment.members) {
             if ($groups -contains $Member) {
                 $groupname=(Get-AzureADGroupNameGraph $member).displayName
-                write-host "found $groupname"
-                foreach ($scope in $scopes) {
-                    write-host $scope.displayName
+                write-host "`tfound $groupname"
+                If ($scopes) {
+                    foreach ($scope in $scopes) {
+                        write-host $scope.displayName
+                        $Object = New-Object PSObject -Property @{
+	                        Role=$roleDefinition.displayName
+                            Assignment=$assignment.displayName
+                            Scopes=$scope.displayName
+                            GroupName=$groupname
+                        }
+                        $relevantAssignments+=$object
+                    }
+                } else {
                     $Object = New-Object PSObject -Property @{
 	                    Role=$roleDefinition.displayName
                         Assignment=$assignment.displayName
-                        Scopes=$scope.displayName
+                        Scopes=$null
                         GroupName=$groupname
                     }
                     $relevantAssignments+=$object
@@ -545,5 +555,8 @@ foreach ($roleDefinition in $roleDefinitions) {
         }
     }
 }
-$relevantAssignments|ft
-
+If ($relevantAssignments) {
+    $relevantAssignments|ft
+} else {
+    write-host "No roles assigned to user"
+}
