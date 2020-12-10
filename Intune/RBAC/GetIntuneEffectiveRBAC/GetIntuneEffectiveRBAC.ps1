@@ -537,8 +537,8 @@ foreach ($roleDefinition in $roleDefinitions) {
                         #write-host $scope.displayName
                         $Object = New-Object PSObject -Property @{
 	                        Role=$roleDefinition.displayName
-                            Assignment=$assignment.displayName
-                            Scopes=$scope.displayName
+                            RoleAssignment=$assignment.displayName
+                            ScopeTags=$scope.displayName
                             GroupName=$groupname
                         }
                         $relevantAssignments+=$object
@@ -546,8 +546,8 @@ foreach ($roleDefinition in $roleDefinitions) {
                 } else {
                     $Object = New-Object PSObject -Property @{
 	                    Role=$roleDefinition.displayName
-                        Assignment=$assignment.displayName
-                        Scopes=$null
+                        RoleAssignment=$assignment.displayName
+                        ScopeTags=$null
                         GroupName=$groupname
                     }
                     $relevantAssignments+=$object
