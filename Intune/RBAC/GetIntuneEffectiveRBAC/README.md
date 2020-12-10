@@ -5,7 +5,7 @@ The script will prompt you for administrator credentials and then the UPN of a u
 
 The output will look like this if the user is in any role assignments:
 
-GroupName|Scopes|Assignment|Role
+GroupName|ScopeTags|RoleAssignment|Role
 |---|---|---|---|       
 |The Azure AD Group |The scope tags in the assignment|The assignment name|The role name|
 
@@ -30,7 +30,7 @@ checking Read Only Operator
 
 checking Intune Role Administrator
 
-GroupName     Scopes Assignment Role                
----------     ------ ---------- ----                
-1001 - Admins 1001   1001       School Administrator
+GroupName     ScopeTags RoleAssignment Role                
+---------     --------- -------------- ----                
+1001 - Admins 1001      1001           School Administrator
 ```
