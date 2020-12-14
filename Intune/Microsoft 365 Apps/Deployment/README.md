@@ -1,3 +1,5 @@
+**under construction**
+
 # Microsoft 365 App Deployment using Win32 apps
 
 This article provides information about how to deploy Microsoft 365 Apps (including optional apps for Visio and Project) using an Intune Win32 app. 
@@ -10,3 +12,19 @@ The built in tool for deploying Microsoft 365 Apps uses the Office CSP in Window
 |---|---|---|
 | User interaction | No | Yes |
 | Optional additional apps | No | Yes |
+
+## Using Service UI to display user notifications
+
+ServiceUI.exe is a process that is used by Microsoft Deployment Toolkit or Configuration Manager to display notifications in the user context during a task sequence deployment. You can grab the executable from **update here**.
+
+I've created two scripts in this repository for you to start with:
+ - **Use-ServiceUI.ps1** - Is the wrapper script that runs ServiceUI and executes a command in the user context if a user is logged on and then runs the install command.
+ - **Notification.ps1** - Is the script that ServiceUI will run to interact with the user (in this case to prompt to close Office apps).
+
+If you want to run something other than notification.ps1 you can edit Use-ServiceUI.ps1 to change which process it runs if a user is logged on.
+
+### Creating the Win32 app
+The script takes the parameter InstallCommand which is the command you would normally enter as the install command.
+
+**Command line** | powershell.exe -executionpolicy bypass -file Use-ServiceUI.ps1 -installcommand "setupodt.exe /configure Add-VisioStdXVolume-x64.xml"
+
