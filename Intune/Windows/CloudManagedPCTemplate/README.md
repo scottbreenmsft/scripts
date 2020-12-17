@@ -12,9 +12,11 @@ This page provides some recommendations for creating your first Windows cloud ma
 ## Settings
 ### Administrative Templates
 **Mirosoft OneDrive**
- - Microsoft OneDrive > Silently sign in users to the OneDrive sync app with their Windows credentials > **Enabled**
- - Microsoft OneDrive > Silently move Windows known folders to OneDrive > **Enabled**
-   - Navigate to aad.portal.azure.com to get the Azure AD tenant ID and paste it in.
+ - Configure OneDrive to sign in automatically
+   - Microsoft OneDrive > Silently sign in users to the OneDrive sync app with their Windows credentials > **Enabled**
+ - Configure Known Folder Move
+   - Microsoft OneDrive > Silently move Windows known folders to OneDrive > **Enabled**
+     - Navigate to aad.portal.azure.com to get the Azure AD tenant ID and paste it in.
 
 **Microsoft Edge**
  - Configure Edge to skip the first run experience and go straight to the home page
