@@ -79,15 +79,17 @@ LAPS/lockdown
 ### Configure Windows Hello for Business as optional
 The following registry key can be set using a PowerShell script to prevent Windows from forcing Windows Hello registration at sign in. This allows Windows Hello to be enabled but not be forced. This could be relevent for students or teachers.
 
-**Key**: HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\PassportForWork
-**Name**: DisablePostLogonProvisioning
-**Type**: DWORD
-**Value**: 1
+```
+Key: HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\PassportForWork
+Name: DisablePostLogonProvisioning
+Type: DWORD
+Value: 1
 
-**Key**: HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\PassportForWork
-**Name**: Enabled
-**Type**: DWORD
-**Value**: 1
+Key: HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\PassportForWork
+Name: Enabled
+Type: DWORD
+Value: 1
+```
 
 ### Disable Windows Hello for Business and enabled selectively by group
  - Disable tenant settings (Devices > Enrollment > Windows Hello for Business
