@@ -17,9 +17,12 @@ This page provides some recommendations for creating your first Windows cloud ma
    - Navigate to aad.portal.azure.com to get the Azure AD tenant ID and paste it in.
 
 **Microsoft Edge**
- - Microsoft Edge > Hide the first-run experience and splash screen > **Enabled**
- - Microsoft Edge > Force synchronization and do not show the sync consent prompt > **Enabled**
- - Microsoft Edge Update > Applications > Prevent Desktop Shortcut creation upon install default > **Disabled**
+ - Configure Edge to skip the first run experience and go straight to the home page
+   - Microsoft Edge > Hide the first-run experience and splash screen > **Enabled**
+ - Enable Sync
+   - Microsoft Edge > Force synchronization and do not show the sync consent prompt > **Enabled**
+ - Disable Edge Desktop Shortcut
+   - Microsoft Edge Update > Applications > Prevent Desktop Shortcut creation upon install default > **Disabled**
  
 Other settings to consider:
  - Configure Internet Explorer integration
