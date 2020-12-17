@@ -40,6 +40,7 @@ Other settings to consider:
 ### Custom
 
 #### Restrict the private store in the machine context
+This configuration ensures that the Store app is restricted to the Private Store and has no dependency on user synchronisation as new, guest or user accounts with no Azure AD presence log on.
 Property | Value
 ---|---
 OMA-URI | ./Device/Vendor/MSFT/Policy/Config/ApplicationManagement/RequirePrivateStoreOnly
@@ -47,6 +48,7 @@ Type |  Integer
 Value | 1
 
 #### Turn off the first sign-in animation
+This configuration remove the sign animation so that the user is just presented with the spinning wheel and "Preparing Windows".
 Property | Value
 ---|---
 OMA-URI | ./Device/Vendor/MSFT/Policy/Config/WindowsLogon/EnableFirstLogonAnimation
@@ -61,6 +63,7 @@ Type |  Boolean
 Value | True
 
 #### Restricted Groups / LocalUsersAndGroups
+If different Local Administrators are required for groups of devices, this CSP can be used to target Azure AD groups as local administrators from Windows 10 20H2. RestrictedGroups is required for versions of Windows prior to 20H2.
 https://docs.microsoft.com/en-us/windows/client-management/mdm/policy-csp-localusersandgroups
 
 ### Delivery Optimisation 
@@ -74,8 +77,12 @@ LAPS/lockdown
  - Windows Hello Hybrid - https://docs.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-hybrid-cert-trust-prereqs
  
 ### Configure Windows Hello for Business as optional
- - Enable Windows Hello opt-in
- 
+The following registry key can be set using a PowerShell script to prevent Windows from forcing Windows Hello registration at sign in. This allows Windows Hello to be enabled but not be forced. This could be relevent for students or teachers.
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\PassportForWork]
+"DisablePostLogonProvisioning"=dword:00000001
+"Enabled"=dword:00000001
+
 ### Disable Windows Hello for Business and enabled selectively by group
  - Disable tenant settings (Devices > Enrollment > Windows Hello for Business
  - Use **Identity Protection** profiles to target and enable
