@@ -36,10 +36,15 @@ Other settings to consider:
  - User Configuration > Microsoft Outlook 2016 > Account Settings > Exchange > Automatically configure only the first profile based on Active Directory primary SMTP address > **Enabled**
 	
 ### Device Restrictions
- - Azure Active Directory preferred tenant domain
- - Tenant lockdown
- - Spotlight
+ - **Azure Active Directory preferred tenant domain**
+  - This simplfies Windows logon after enrollment. You can specify the domain name Windows should append to usernames when logging on.
+   - Device Restrictions > Password > Preferred Azure AD tenant domain > **your fully qualified domain name**
 
+ - **Turn off Consumer Features**
+  - This prevents Windows from reaching out and downloading "suggested" applications to keep a clean experience.
+    - Device Restrictions > Windows Spotlight > Consumer Features > **Block**
+
+ - Tenant lockdown
 ### Custom
 
 #### Restrict the private store in the machine context
