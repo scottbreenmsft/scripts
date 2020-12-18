@@ -7,7 +7,7 @@
     Remove built-in apps (modern apps) from Windows 10.
 
 .DESCRIPTION
-    For info, see https://github.com/scottbreenmsft/scripts/edit/master/Intune/Windows/RemoveApps/
+    For info, see 
 
 .EXAMPLE
     .\RemoveWin10Apps.ps1
@@ -42,7 +42,7 @@ $AppsToRemove = @(
 Write-output "Apps to remove:`n$($AppsToRemove -join "`n")"
 
 # Get provisioned apps
-$AppAList = Get-AppxProvisionedPackage -Online | Select-Object -ExpandProperty DisplayName
+$AppList = Get-AppxProvisionedPackage -Online | Select-Object -ExpandProperty DisplayName
 
 # Loop through the list of appx packages
 foreach ($App in $AppList) {
