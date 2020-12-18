@@ -37,12 +37,12 @@ Other settings to consider:
 	
 ### Device Restrictions
  - **Azure Active Directory preferred tenant domain**
-  - This simplfies Windows logon after enrollment. You can specify the domain name Windows should append to usernames when logging on.
-   - Device Restrictions > Password > Preferred Azure AD tenant domain > **your fully qualified domain name**
+   - This simplfies Windows logon after enrollment. You can specify the domain name Windows should append to usernames when logging on.
+    - Device Restrictions > Password > Preferred Azure AD tenant domain > **your fully qualified domain name**
 
  - **Turn off Consumer Features**
-  - This prevents Windows from reaching out and downloading "suggested" applications to keep a clean experience.
-    - Device Restrictions > Windows Spotlight > Consumer Features > **Block**
+   - This prevents Windows from reaching out and downloading "suggested" applications to keep a clean experience.
+     - Device Restrictions > Windows Spotlight > Consumer Features > **Block**
 
  - Tenant lockdown
 ### Custom
