@@ -26,5 +26,5 @@ If you want to run something other than notification.ps1 you can edit Use-Servic
 ### Creating the Win32 app
 The script takes the parameter **InstallCommand** which is the command you would normally enter as the install command.
 
-**Example command line**: powershell.exe -executionpolicy bypass -file Use-ServiceUI.ps1 -installcommand "setupodt.exe /configure Add-VisioStdXVolume-x64.xml"
-**Detection Method**: See https://github.com/scottbreenmsft/scripts/edit/master/Intune/Microsoft%20365%20Apps/Detection
+- **Example command line**: powershell.exe -executionpolicy bypass -file Use-ServiceUI.ps1 -installcommand "setupodt.exe /configure Add-VisioStdXVolume-x64.xml"
+- **Detection Method**: See https://github.com/scottbreenmsft/scripts/edit/master/Intune/Microsoft%20365%20Apps/Detection
