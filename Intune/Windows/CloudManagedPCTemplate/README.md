@@ -8,7 +8,7 @@ This page provides some recommendations for creating your first Windows cloud ma
  - Offline apps
    - Selecting to add Offline apps from the Microsoft Store for Education/Business allows you to deploy the application the device context. When an app is installed in the device context it does not need to install in each users profile at first logon. This improves first logon time and the time from logon to when the app can be used for the first time.
  - Remove built in apps
-   - Removing built in apps increases initial log on time and provides a clean Windows experience. See https://github.com/scottbreenmsft/scripts/tree/master/Intune/Windows/RemoveApps for an example.
+   - Removing built in apps decreases initial log on time and provides a clean Windows experience. See https://github.com/scottbreenmsft/scripts/tree/master/Intune/Windows/RemoveApps for an example.
 
 ## Settings
 ### Administrative Templates
