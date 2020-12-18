@@ -37,14 +37,14 @@ $AppsToRemove = @(
 )
 
 # Get provisioned apps
-$AppArrayList = Get-AppxProvisionedPackage -Online | Select-Object -ExpandProperty DisplayName
+$AppAList = Get-AppxProvisionedPackage -Online | Select-Object -ExpandProperty DisplayName
 
 # Loop through the list of appx packages
-foreach ($App in $AppArrayList) {
+foreach ($App in $AppList) {
     Write-host "Processing appx package: $($App)"
 
     # If application name not in appx package white list, remove AppxPackage and AppxProvisioningPackage
-    if (($App -in $BlacklistedApps)) {
+    if (($App -in $AppsToRemove)) {
         # Gather package names
         $AppPackageFullName = Get-AppxPackage -Name $App | Select-Object -ExpandProperty PackageFullName -First 1
         $AppProvisioningPackageName = Get-AppxProvisionedPackage -Online | Where-Object { $_.DisplayName -like $App } | Select-Object -ExpandProperty PackageName -First 1
