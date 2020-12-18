@@ -7,7 +7,7 @@
     Remove built-in apps (modern apps) from Windows 10.
 
 .DESCRIPTION
-    For info, see 
+    For info, see https://github.com/scottbreenmsft/scripts/edit/master/Intune/Windows/RemoveApps
 
 .EXAMPLE
     .\RemoveWin10Apps.ps1
@@ -57,7 +57,7 @@ foreach ($App in $AppList) {
         # Attempt to remove AppxPackage
         if ($AppPackageFullName -ne $null) {
             Write-output "Removing AppxPackage: $($AppPackageFullName)"
-            Remove-AppxPackage -Package $AppPackageFullName
+            Remove-AppxPackage -Package $AppPackageFullName -allusers
         }
         else {
             Write-output "Unable to locate AppxPackage for current app: $($App)"
@@ -65,6 +65,7 @@ foreach ($App in $AppList) {
 
         # Attempt to remove AppxProvisioningPackage
         if ($AppProvisioningPackageName -ne $null) {
+            Write-output "Removing AppxProvisionedPackage: $($AppProvisioningPackageName)"
             Remove-AppxProvisionedPackage -PackageName $AppProvisioningPackageName -Online
         } else {
             Write-output "Unable to locate AppxProvisioningPackage for current app: $($App)"
