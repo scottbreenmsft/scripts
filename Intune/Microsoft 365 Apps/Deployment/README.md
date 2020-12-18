@@ -15,7 +15,7 @@ The built in tool for deploying Microsoft 365 Apps uses the Office CSP in Window
 
 ## Using Service UI to display user notifications
 
-ServiceUI.exe is a process that is used by Microsoft Deployment Toolkit or Configuration Manager to display notifications in the user context during a task sequence deployment. You can grab the executable from **update here**.
+ServiceUI.exe is a process that is used by Microsoft Deployment Toolkit or Configuration Manager to display notifications in the user context during a task sequence deployment. You can find a copy of ServiceUI.exe in the installed program files for Microsoft Deployment Toolkit under **C:\Program Files\Microsoft Deployment Toolkit\Templates\Distribution\Tools\x64\ServiceUI.exe**.
 
 I've created two scripts in this repository for you to start with:
  - **Use-ServiceUI.ps1** - Is the wrapper script that runs ServiceUI and executes a command in the user context if a user is logged on and then runs the install command.
@@ -24,7 +24,7 @@ I've created two scripts in this repository for you to start with:
 If you want to run something other than notification.ps1 you can edit Use-ServiceUI.ps1 to change which process it runs if a user is logged on.
 
 ### Creating the Win32 app
-The script takes the parameter InstallCommand which is the command you would normally enter as the install command.
+The script takes the parameter **InstallCommand** which is the command you would normally enter as the install command.
 
-**Command line** | powershell.exe -executionpolicy bypass -file Use-ServiceUI.ps1 -installcommand "setupodt.exe /configure Add-VisioStdXVolume-x64.xml"
-
+**Example command line**: powershell.exe -executionpolicy bypass -file Use-ServiceUI.ps1 -installcommand "setupodt.exe /configure Add-VisioStdXVolume-x64.xml"
+**Detection Method**: See https://github.com/scottbreenmsft/scripts/edit/master/Intune/Microsoft%20365%20Apps/Detection
