@@ -123,7 +123,8 @@ Intune data collection policy: enable Windows Updates
 Some example dynamic group queries:
  - A group of all Windows corporate devices that are not in Autopilot:
    - -not(device.devicePhysicalIds -any (_ -contains "[ZTDId]")) -and (device.deviceOSType -contains "Windows") -and (device.deviceOwnership -contains "Company")
-
+ - A group of Autopilot devices that have a Group Tag that contains a particular string (e.g. school code). Replace 10001 with your string.
+  - (device.devicePhysicalIds -any _ -match "\[OrderID\]:+.*10001.*")
 
 Autopilot Config
 Groups - https://docs.microsoft.com/en-us/mem/autopilot/enrollment-autopilot#create-an-autopilot-device-group
