@@ -1,12 +1,20 @@
 # Microsoft Autoupdate configuration
 
-The Microsoft Autoupdate application on macOS is responsible for updating several Microsoft applications. The Microsoft Autoupdate application updates applications that are not installed from the macOS app store. Applications installed from the macOS app store are updated using the app store.
+The Microsoft Autoupdate application on macOS is responsible for updating several Microsoft applications. The Microsoft Autoupdate application updates applications that are not installed from the macOS app store. Applications installed from the macOS app store are updated using the app store. The Microsoft Autoupdate application is automatically installed alongside:
+ - Company Portal
+ - Microsoft Office
+ - Microsoft OneDrive
+ - Microsoft Defender for Endpoint for Mac
 
 This article explains how you can set and minimise the configuration steps required by users for the Microsoft Autoupdate application when devices are managed by an MDM.
 
 ## Custom configuration
 
-This Custom-Microsoft-Autoupdate.xml file contains an example file that can be used to configure the macOS Microsoft Autoupdate application. This file can be deployed to macOS devices using [Microsoft Intune custom profiles](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
+This **Custom-Microsoft-Autoupdate.xml** file contains an example file that can be used to configure the macOS Microsoft Autoupdate application. This file can be deployed to macOS devices using [Microsoft Intune custom profiles](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
+
+ - **Profile name**: com.microsoft.autoupdate2
+ - **Configuration XML**: Custom-Microsoft-Autoupdate.xml
+
 
 Below are the settings set by the sample configuration file:
 
