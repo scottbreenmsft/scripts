@@ -12,8 +12,9 @@ Below are the settings set by the sample configuration file:
 
 | Setting Name | Setting Value | Reference |
 | --- | --- | --- |
-| ChannelName | Production | [Deploy updates for Microsoft Defender for Endpoint for Mac](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#set-the-channel-name) |
-| HowToCheck | AutomaticDownload | [Deploy updates for Microsoft Defender for Endpoint for Mac](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#change-how-mau-interacts-with-updates) |
-| DisableInsiderCheckbox | False | [Deploy updates for Microsoft Defender for Endpoint for Mac](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#disable-insider-checkbox) |
-| SendAllTelemetryEnabled | True | [Deploy updates for Microsoft Defender for Endpoint for Mac](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#limit-the-telemetry-that-is-sent-from-mau) | 
+| ChannelName | Production | [Set preferences for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#set-the-channel-name) |
+| HowToCheck | AutomaticDownload | [Set preferences for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#change-how-mau-interacts-with-updates) |
+| DisableInsiderCheckbox | False | [Set preferences for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#disable-insider-checkbox) |
+| SendAllTelemetryEnabled | True | [Set preferences for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#limit-the-telemetry-that-is-sent-from-mau) | 
+| UpdateCheckFrequency | 720 | [Set preferences for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/windows/security/threat-protection/microsoft-defender-atp/mac-updates#set-update-check-frequency) | 
 | AcknowledgedDataCollectionPolicy | RequiredAndOptionalData | [Preference setting for the Required Data Notice dialog for Microsoft AutoUpdate](https://docs.microsoft.com/en-us/deployoffice/privacy/mac-privacy-preferences#preference-setting-for-the-required-data-notice-dialog-for-microsoft-autoupdate) |
