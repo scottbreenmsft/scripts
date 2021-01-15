@@ -8,7 +8,7 @@ Software updates on macOS can be managed by Intune using 2 options.
    - Configures the built in Software Updates feature on macOS to do things like automatically install updates and delay install of updates for a certain number of days after release.
    
 ## Update policies for macOS
-Insert documentation here..
+This feature is not available in Intune.
 
 > [!NOTE]
 > This feature triggers the installation of updates during a device check-in. If reboots are required, they may occur without prompting the user. 
