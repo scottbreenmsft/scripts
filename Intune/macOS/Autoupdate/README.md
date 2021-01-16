@@ -13,7 +13,7 @@ This article explains how you can set and minimise the configuration steps requi
 
 This **Custom-Microsoft-Autoupdate.xml** file contains an example file that can be used to configure the macOS Microsoft Autoupdate application. This file can be deployed to macOS devices using [Microsoft Intune custom profiles](https://docs.microsoft.com/en-us/mem/intune/configuration/custom-settings-macos).
 
- - **Profile name**: com.microsoft.autoupdate2
+ - **Profile name**: Custom - Microsoft Autoupdate
  - **Configuration XML**: Custom-Microsoft-Autoupdate.xml
 
 
