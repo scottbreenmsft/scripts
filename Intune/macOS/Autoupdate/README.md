@@ -2,6 +2,7 @@
 
 The Microsoft Autoupdate application on macOS is responsible for updating several Microsoft applications. The Microsoft Autoupdate application updates applications that are not installed from the macOS app store. Applications installed from the macOS app store are updated using the app store. The Microsoft Autoupdate application is automatically installed alongside:
  - Company Portal
+ - Microsoft Edge
  - Microsoft Office
  - Microsoft OneDrive
  - Microsoft Defender for Endpoint for Mac
