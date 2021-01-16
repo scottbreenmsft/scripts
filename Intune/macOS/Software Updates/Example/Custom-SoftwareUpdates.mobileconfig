@@ -30,16 +30,13 @@
 			<key>PayloadDisplayName</key>
 			<string>Software Update</string>
 			<key>PayloadIdentifier</key>
-			<string>com.custom.SoftwareUpdates</string>
-			<key>PayloadOrganization</key>
-			<string></string>
+			<string>com.apple.SoftwareUpdate.D70FE058-277D-4FF5-A1E9-7CD922731576</string>
 			<key>PayloadType</key>
 			<string>com.apple.SoftwareUpdate</string>
 			<key>PayloadUUID</key>
 			<string>D70FE058-277D-4FF5-A1E9-7CD922731576</string>
 			<key>PayloadVersion</key>
 			<integer>1</integer>
-
 		</dict>
 	</array>
 </dict>
