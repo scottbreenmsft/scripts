@@ -1,43 +1,12 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>PayloadDisplayName</key>
-	<string>macOS - Software Updates</string>
-	<key>PayloadIdentifier</key>
-	<string>com.custom.SoftwareUpdates</string>
-	<key>PayloadType</key>
-	<string>Configuration</string>
-	<key>PayloadUUID</key>
-	<string>20285685-7DBD-4830-B4F8-57E118BBEC0A</string>
-	<key>PayloadVersion</key>
-	<integer>1</integer>
-	<key>PayloadContent</key>
-	<array>
-		<dict>
-			<key>AutomaticCheckEnabled</key>
-			<true/>
-			<key>AutomaticDownload</key>
-			<true/>
-			<key>AutomaticallyInstallAppUpdates</key>
-			<true/>
-			<key>AutomaticallyInstallMacOSUpdates</key>
-			<true/>
-			<key>ConfigDataInstall</key>
-			<true/>
-			<key>CriticalUpdateInstall</key>
-			<true/>
-			<key>PayloadDisplayName</key>
-			<string>Software Update</string>
-			<key>PayloadIdentifier</key>
-			<string>com.apple.SoftwareUpdate.D70FE058-277D-4FF5-A1E9-7CD922731576</string>
-			<key>PayloadType</key>
-			<string>com.apple.SoftwareUpdate</string>
-			<key>PayloadUUID</key>
-			<string>D70FE058-277D-4FF5-A1E9-7CD922731576</string>
-			<key>PayloadVersion</key>
-			<integer>1</integer>
-		</dict>
-	</array>
-</dict>
-</plist>
+<key>AutomaticCheckEnabled</key>
+<true/>
+<key>AutomaticDownload</key>
+<true/>
+<key>AutomaticallyInstallAppUpdates</key>
+<true/>
+<key>AutomaticallyInstallMacOSUpdates</key>
+<true/>
+<key>ConfigDataInstall</key>
+<true/>
+<key>CriticalUpdateInstall</key>
+<true/>
