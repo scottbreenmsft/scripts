@@ -1,5 +1,8 @@
-
-##Requires Install-Module Microsoft.Graph
+#requires -modules Microsoft.Graph.Intune
+##########################################
+#Install required modules using local admin and following command:
+#Install-Module Microsoft.Graph.Intune
+##########################################
 
 
 $profilesenum=@{
