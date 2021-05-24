@@ -1,4 +1,6 @@
 
+#Requires Install-Module Microsoft.Graph
+
 
 $profilesenum=@{
 "AndroidCustom"=1;
