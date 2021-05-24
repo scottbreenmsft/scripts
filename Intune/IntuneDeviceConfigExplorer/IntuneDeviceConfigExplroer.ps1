@@ -1,5 +1,5 @@
 
-#Requires Install-Module Microsoft.Graph
+##Requires Install-Module Microsoft.Graph
 
 
 $profilesenum=@{
