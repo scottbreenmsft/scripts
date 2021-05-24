@@ -1,6 +1,4 @@
 
-#https://login.microsoftonline.com/bdoe.breenl.com/v2.0/adminconsent?client_id=d1ddf0e4-d672-4dae-b554-9d5bdfd93547&state=12345&redirect_uri=http://localhost/myapp/permissions&scope=https://graph.microsoft.com/DeviceManagementRBAC.Read.All
-
 $profilesenum=@{
 "AndroidCustom"=1;
 "AndroidEmailProfile"=2;
