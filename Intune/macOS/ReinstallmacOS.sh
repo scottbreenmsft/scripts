@@ -10,4 +10,6 @@ ver=$(sw_vers | grep ProductVersion | cut -d':' -f2 | tr -d ' ')
 
 echo "Downloading Operating System"
 /usr/sbin/softwareupdate --fetch-full-installer  --full-installer-version $ver
+
+echo "installing OS"
 #"$START" --eraseinstall --agreetolicense --forcequitapps --newvolumename 'Macintosh HD' --nointeraction
