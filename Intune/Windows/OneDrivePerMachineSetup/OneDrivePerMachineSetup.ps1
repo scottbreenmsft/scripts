@@ -36,6 +36,8 @@ If (-not (get-itempropertyvalue -PATH "hklm:\SOFTWARE\Microsoft\OneDrive\" -NAME
     #start setup
     Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message  "$ScriptName : Starting install"
     $proc=Start-Process $outputfile -ArgumentList "/allusers /silent" -Wait -PassThru
+    
+    start-sleep -Seconds 30
 
     #wait for setup to complete (sometimes it creates additional processes to complete setup)
     If (get-process onedrivesetup -ErrorAction SilentlyContinue) {
