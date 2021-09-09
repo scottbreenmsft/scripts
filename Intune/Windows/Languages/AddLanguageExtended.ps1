@@ -1,14 +1,16 @@
+start-transcript C:\windows\temp\lang.log
 $geoId = 12  # Australia
 $skuId = 0016
 $inputLanguageID = "0c09:00000409" # en-US https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/default-input-locales-for-windows-language-packs
 $locale = "en-au"
-$languagepack = "en-GB"
+$languagepack = "en-gb"
+$exit=0
 
 #en-gb local experience packfamily name
 $applicationId = "9nt52vq39bvn" #English GB https://www.microsoft.com/en-au/p/english-united-kingdom-local-experience-pack/9nt52vq39bvn
 $packageFamilyName="Microsoft.LanguageExperiencePacken-GB_8wekyb3d8bbwe"
 
-write-host "Triggering Local Experience pack install"
+write-host "$(get-date) Triggering Local Experience pack install"
 $status = $(Get-AppxPackage -Allusers | ? Name -Like *LanguageExperiencePacken-gb).Status
 if ($status -ne "Ok") {
     try {
@@ -32,7 +34,8 @@ if ($status -ne "Ok") {
         # we create the MDM instance and trigger the StoreInstallMethod to finally download the LXP
         $instance = $session.CreateInstance($namespaceName, $newInstance)
         $result = $session.InvokeMethod($namespaceName, $instance, "StoreInstallMethod", $params)
-        "...Language Experience Pack install process triggered via MDM/StoreInstall method"
+        write-host "$(get-date) ...Language Experience Pack install process triggered via MDM/StoreInstall method"
+
 
         #start-sleep -seconds 120
     }
@@ -42,13 +45,30 @@ if ($status -ne "Ok") {
     }
 }
 
+
+#install language packs and language capabilities
+IF (-not (get-WindowsPackage -online -packagename "Microsoft-Windows-Client-LanguagePack*en-gb*" | where {$_.PackageState -eq "installed" })) {
+    write-host "$(get-date) adding package Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab"
+    Add-WindowsPackage -online -PackagePath "Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab"
+} else {
+    write-host "$(get-date) package Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab already installed"
+}
+
+write-host "Installing Windows Capabiltiies for $languagepack"
+$capabilities=Get-WindowsCapability -online -Name *$languagepack*
+Foreach($capability in $capabilities) {
+    IF ($capability.state -eq "NotPresent") {
+        write-host "$(get-date) adding $($capability.name)"
+        Add-WindowsCapability -Name $capability.name -online
+    }
+}
+
 #trigger the install of Windows capabilities for the locale while the appx package installs
 write-host "Installing Windows Capabiltiies for $locale"
-Get-WindowsCapability -online -Name *$locale* | ft
 $capabilities=Get-WindowsCapability -online -Name *$locale*
 Foreach($capability in $capabilities) {
     IF ($capability.state -eq "NotPresent") {
-        write-output "adding $($capability.name)"
+        write-host "$(get-date) adding $($capability.name)"
         Add-WindowsCapability -Name $capability.name -online
     }
 }
@@ -58,26 +78,26 @@ $finish=$false
 Do {
     $status = $(Get-AppxPackage -Allusers | ? Name -Like *LanguageExperiencePacken-gb).Status
     if ($status -ne "Ok") {
-        write-host "Waiting for language experience pack to install"
+        write-host "$(get-date) Waiting for language experience pack to install"
         start-sleep -seconds 60
     } else {
         $finish=$true
     }
 } while (-not $finish)
 
-#Set keyboard list to en-au
-write-host "Setting keyboard list to $locale"
-Set-WinUserLanguageList $locale -Force
 
 #set speech
-write-host "setting speech to $locale in default user profile"
+write-host "$(get-date) setting speech to $locale in default user profile"
 reg load HKLM\DefaultUser C:\Users\Default\NTUSER.DAT
-reg add HKLM\DefaultUser\SOFTWARE\Microsoft\Speech_OneCore\Settings\SpeechRecognizer /v RecognizedLanguage /t reg_sz /d $locale
-reg unload HKLM\DefaultUser
 start-sleep -seconds 5
+reg add HKLM\DefaultUser\SOFTWARE\Microsoft\Speech_OneCore\Settings\SpeechRecognizer /v RecognizedLanguage /t reg_sz /d $locale /f
+start-sleep -seconds 5
+reg unload HKLM\DefaultUser
+start-sleep -seconds 10
+
 
 #Change new profile language options
-write-host "Creating XML for international control panel applet"
+write-host "$(get-date) Creating XML for international control panel applet"
 $languageXml = @"
 <gs:GlobalizationServices xmlns:gs="urn:longhornGlobalizationUnattend">
 
@@ -118,6 +138,26 @@ write-host "Saving XML to $languageXml"
 Out-File -FilePath $languageXmlPath -InputObject $languageXml -Encoding ascii
 
 #execute command to set and copy language settings to default / welcome screen
-write-host "Passing $languageXmlPath to international control panel applet"
-& $env:SystemRoot\System32\control.exe "intl.cpl,,/f:`"$languageXmlPath`""
+write-host "$(get-date) Passing $languageXmlPath to international control panel applet"
+#& $env:SystemRoot\System32\control.exe "intl.cpl,,/f:`"$languageXmlPath`""
 
+write-host "locale"
+set-WinSystemLocale $locale
+write-host "langlist"
+set-WinUserLanguageList $locale
+write-host "override"
+set-WinUILanguageOverride $languagepack
+
+#trigger scheduled task
+write-host "$(get-date) ...trigger ScheduledTask = Langet-windowsguageComponentsInstaller\ReconcileLanguageResources"
+Start-ScheduledTask -TaskName "\Microsoft\Windows\LanguageComponentsInstaller\ReconcileLanguageResources"
+
+write-host "locale"
+Get-WinSystemLocale
+write-host "langlist"
+Get-WinUserLanguageList
+write-host "override"
+Get-WinUILanguageOverride
+
+& REG add "HKLM\Software\MOE" /v "SetLanguage-$locale" /t REG_SZ /D "$(date)" /f /reg:64 | Out-Null
+stop-transcript
