@@ -147,12 +147,6 @@ write-host "$(get-date) Passing $languageXmlPath to international control panel 
 write-host "$(get-date) ...trigger ScheduledTask = Langet-windowsguageComponentsInstaller\ReconcileLanguageResources"
 Start-ScheduledTask -TaskName "\Microsoft\Windows\LanguageComponentsInstaller\ReconcileLanguageResources"
 
-write-host "locale"
-Get-WinSystemLocale
-write-host "langlist"
-Get-WinUserLanguageList
-write-host "override"
-Get-WinUILanguageOverride
 
 & REG add "HKLM\Software\MOE" /v "SetLanguage-$locale" /t REG_SZ /D "$(date)" /f /reg:64 | Out-Null
 stop-transcript
