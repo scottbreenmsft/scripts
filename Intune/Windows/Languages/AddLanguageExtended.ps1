@@ -6,6 +6,7 @@ $locale = "en-au"
 $languagepack = "en-gb"
 $exit=0
 
+
 #en-gb local experience packfamily name
 $applicationId = "9nt52vq39bvn" #English GB https://www.microsoft.com/en-au/p/english-united-kingdom-local-experience-pack/9nt52vq39bvn
 $packageFamilyName="Microsoft.LanguageExperiencePacken-GB_8wekyb3d8bbwe"
@@ -50,6 +51,7 @@ if ($status -ne "Ok") {
 IF (-not (get-WindowsPackage -online -packagename "Microsoft-Windows-Client-LanguagePack*en-gb*" | where {$_.PackageState -eq "installed" })) {
     write-host "$(get-date) adding package Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab"
     Add-WindowsPackage -online -PackagePath "Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab"
+    $exit="1641"
 } else {
     write-host "$(get-date) package Microsoft-Windows-Client-Language-Pack_x64_en-gb.cab already installed"
 }
@@ -139,14 +141,7 @@ Out-File -FilePath $languageXmlPath -InputObject $languageXml -Encoding ascii
 
 #execute command to set and copy language settings to default / welcome screen
 write-host "$(get-date) Passing $languageXmlPath to international control panel applet"
-#& $env:SystemRoot\System32\control.exe "intl.cpl,,/f:`"$languageXmlPath`""
-
-write-host "locale"
-set-WinSystemLocale $locale
-write-host "langlist"
-set-WinUserLanguageList $locale
-write-host "override"
-set-WinUILanguageOverride $languagepack
+& $env:SystemRoot\System32\control.exe "intl.cpl,,/f:`"$languageXmlPath`""
 
 #trigger scheduled task
 write-host "$(get-date) ...trigger ScheduledTask = Langet-windowsguageComponentsInstaller\ReconcileLanguageResources"
@@ -161,3 +156,5 @@ Get-WinUILanguageOverride
 
 & REG add "HKLM\Software\MOE" /v "SetLanguage-$locale" /t REG_SZ /D "$(date)" /f /reg:64 | Out-Null
 stop-transcript
+
+exit $exit
