@@ -430,7 +430,12 @@ do {
         $profileTypeID=$profilesenum[$type]
         IF ($profileTypeID) {
             write-host "$type found as ID $profileTypeID"
-            $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
+
+            If ($type="windowsUpdateForBusiness") {
+                $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/SoftwareUpdatesConfigurationMenuBlade/overview/configurationId/$($profile.id)/configurationName/Windows%20Update%20policy/softwareUpdatesType/windows"
+            } else {
+                $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
+            }
         } else {
             write-host "$type not found" -foregroundcolor "red"
         }
