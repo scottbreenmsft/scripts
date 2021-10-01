@@ -116,8 +116,6 @@ $profilesenum=@{
 "SettingsCatalogWindows10X"=114;
 "SettingsCatalogWindows10"=115;
 "SettingsCatalogMacOS"=116;
-
-
 }
 
 ####################################################
@@ -138,44 +136,51 @@ NAME: Get-DeviceConfigurationPolicy
 
 [cmdletbinding()]
 
-param
-(
-    $name
-)
-
 $graphApiVersion = "Beta"
 $DCP_resource = "deviceManagement/deviceConfigurations"
 
     try {
 
-        if($Name){
-
         $uri = "https://graph.microsoft.com/$graphApiVersion/$($DCP_resource)"
-        (Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get).Value | Where-Object { ($_.'displayName').contains("$Name") }
+        $result=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
+        write-host "$($results.count) returned"
+        $results=@()
+        $results=$result.value
 
+        if ($result."@odata.nextLink") {
+            write-host "More results are available, will begin paging."
+            $noMoreResults=$false
+            do {
+
+                #retrieve the next set of results
+                $result=Invoke-RestMethod -Uri $result."@odata.nextLink" -Headers $authToken -Method Get -ErrorAction Continue
+                $results+=$result.value
+
+                #check if we need to continue paging
+                If (-not $result."@odata.nextLink") {
+                    $noMoreResults=$true
+                    write-host "$($results.count) returned. No more pages."
+                } else {
+                    write-host "$($results.count) returned so far. Retrieving next page."
+                }
+            } until ($noMoreResults)
         }
 
-        else {
-
-        $uri = "https://graph.microsoft.com/$graphApiVersion/$($DCP_resource)"
-        (Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get).Value
-
-        }
-
+        return $results
     }
 
     catch {
 
-    $ex = $_.Exception
-    $errorResponse = $ex.Response.GetResponseStream()
-    $reader = New-Object System.IO.StreamReader($errorResponse)
-    $reader.BaseStream.Position = 0
-    $reader.DiscardBufferedData()
-    $responseBody = $reader.ReadToEnd();
-    Write-Host "Response content:`n$responseBody" -f Red
-    Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
-    write-host
-    break
+        $ex = $_.Exception
+        $errorResponse = $ex.Response.GetResponseStream()
+        $reader = New-Object System.IO.StreamReader($errorResponse)
+        $reader.BaseStream.Position = 0
+        $reader.DiscardBufferedData()
+        $responseBody = $reader.ReadToEnd();
+        Write-Host "Response content:`n$responseBody" -f Red
+        Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
+        write-host
+        break
 
     }
 
@@ -417,11 +422,26 @@ do {
 
     }
 
+    foreach ($profile in $Configs) {
+        $type=$profile."@odata.type"
+        $type=$type.replace("#microsoft.graph.","")
+        $type=$type.replace("Configuration","")
+        
+        $profileTypeID=$profilesenum[$type]
+        IF ($profileTypeID) {
+            write-host "$type found as ID $profileTypeID"
+            $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
+        } else {
+            write-host "$type not found" -foregroundcolor "red"
+        }
+        
+    }
+
     If ($filter) {
         $filterscopetag=$scopetags | Out-GridView -PassThru
-        $selected=$Configs|where {$_.roleScopeTagIds -contains $filterscopetag.id} | select displayName,id,"@odata.type",roleScopeTagIds  | Out-GridView -PassThru
+        $selected=$Configs|where {$_.roleScopeTagIds -contains $filterscopetag.id} | select displayName,id,"@odata.type",roleScopeTagIds, URL  | Out-GridView -PassThru
     } else {
-        $selected=$Configs|select displayName,id,"@odata.type",roleScopeTagIds  | Out-GridView -PassThru
+        $selected=$Configs|select displayName,id,"@odata.type",roleScopeTagIds, URL  | Out-GridView -PassThru
     }
 
     foreach ($profile in $selected) {
