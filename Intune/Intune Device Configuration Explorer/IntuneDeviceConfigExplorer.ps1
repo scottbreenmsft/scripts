@@ -420,48 +420,40 @@ do {
         $scopetags=get-roleScopeTags
         write-host "$($scopetags.count) scope tags returned"
 
-    }
-
-    foreach ($profile in $Configs) {
-        $type=$profile."@odata.type"
-        $type=$type.replace("#microsoft.graph.","")
-        $type=$type.replace("Configuration","")
-        
-        $profileTypeID=$profilesenum[$type]
-        IF ($profileTypeID) {
-            write-host "$type found as ID $profileTypeID"
-
-            If ($type="windowsUpdateForBusiness") {
-                $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/SoftwareUpdatesConfigurationMenuBlade/overview/configurationId/$($profile.id)/configurationName/Windows%20Update%20policy/softwareUpdatesType/windows"
+        foreach ($profile in $Configs) {
+            $type=$profile."@odata.type"
+            $type=$type.replace("#microsoft.graph.","")
+            $type=$type.replace("Configuration","")
+            
+            $profileTypeID=$profilesenum[$type]
+            IF ($profileTypeID) {
+                write-host "$type found as ID $profileTypeID"
+    
+                If ($type -eq "windowsUpdateForBusiness") {
+                    $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/SoftwareUpdatesConfigurationMenuBlade/overview/configurationId/$($profile.id)/configurationName/Windows%20Update%20policy/softwareUpdatesType/windows"
+                } else {
+                    $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
+                }
             } else {
-                $profile | add-member -notepropertyname URL -notepropertyvalue "https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
+                write-host "$type not found" -foregroundcolor "red"
             }
-        } else {
-            write-host "$type not found" -foregroundcolor "red"
+            
         }
-        
     }
 
     If ($filter) {
         $filterscopetag=$scopetags | Out-GridView -PassThru
-        $selected=$Configs|where {$_.roleScopeTagIds -contains $filterscopetag.id} | select displayName,id,"@odata.type",roleScopeTagIds, URL  | Out-GridView -PassThru
+        $selected=$Configs|where-object {$_.roleScopeTagIds -contains $filterscopetag.id} | select displayName,id,"@odata.type",roleScopeTagIds, URL | Out-GridView -PassThru
     } else {
         $selected=$Configs|select displayName,id,"@odata.type",roleScopeTagIds, URL  | Out-GridView -PassThru
     }
 
     foreach ($profile in $selected) {
-        $type=$profile."@odata.type"
-        $type=$type.replace("#microsoft.graph.","")
-        $type=$type.replace("Configuration","")
-        
-        $profileTypeID=$profilesenum[$type]
-        IF ($profileTypeID) {
-            write-host "$type found as ID $profileTypeID"
-            $URL="https://endpoint.microsoft.com/#blade/Microsoft_Intune_DeviceSettings/ConfigurationMenuBlade/overview/configurationId/$($profile.id)/policyType/$profileTypeID/policyJourneyState/0"
-            write-host "URL copied to clipboard" -ForegroundColor "yellow"
-            set-clipboard $URL
+        IF ($profile.URL) {
+            write-host "$($profile.URL) copied to clipboard"
+            set-clipboard $profile.URL
         } else {
-            write-host "$type not found" -foregroundcolor "red"
+            write-host "URL not found" -foregroundcolor "red"
         }
         
     }
@@ -475,7 +467,6 @@ do {
         "o" {}
         "f" {$filter=$true}
     }
-
 
 } until ($end)
 
