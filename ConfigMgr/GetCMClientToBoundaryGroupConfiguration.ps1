@@ -16,7 +16,7 @@
     This parameter will (eventually) list possible IP ranges for clients that could be used to create IP range boundaries. This code is currently experimental and doesn't work as designed.
 
 .PARAMETER Path
-    This is the path to the CSV file
+    This is the path where you could like to export the CSV to. eg. C:\export.csv
 
 .EXAMPLE
     .\GetCMClientToBoundaryGroupConfiguration.ps1 -servername CMSERVER
