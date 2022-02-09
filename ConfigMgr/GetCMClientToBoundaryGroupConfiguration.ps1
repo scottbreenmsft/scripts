@@ -12,7 +12,7 @@
 .PARAMETER ServerName
     The name of the server that runs the SMS provider of the site you want to check. This is usually the CAS or Primary Site Server.
 
-.PARAMETER LisrtRanges
+.PARAMETER ListRanges
     This parameter will (eventually) list possible IP ranges for clients that could be used to create IP range boundaries. This code is currently experimental and doesn't work as designed.
 
 .PARAMETER Path
