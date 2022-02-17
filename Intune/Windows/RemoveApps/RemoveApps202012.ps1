@@ -39,7 +39,8 @@ $AppsToRemove = @(
     "Microsoft.XboxGamingOverlay",
     "Microsoft.XboxIdentityProvider",
     "Microsoft.XboxSpeechToTextOverlay",
-    "Microsoft.YourPhone"
+    "Microsoft.YourPhone",
+    "Microsoft.XboxGameCallableUI"
 )
 
 Write-output "Apps to remove:`n$($AppsToRemove -join "`n")"
