@@ -26,9 +26,11 @@ Start-Transcript -Path "$env:temp\RemoveApps.log"
 
 # List of apps to remove
 $AppsToRemove = @(
+    "Microsoft.BingNews",
     "Microsoft.GetHelp",
     "Microsoft.windowscommunicationsapps",
     "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.PowerAutomateDesktop",
     "Microsoft.People",
     "Microsoft.MicrosoftSolitaireCollection",
     "Microsoft.Skype",
