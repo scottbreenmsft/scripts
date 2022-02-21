@@ -13,11 +13,12 @@
     .\RemoveWin10Apps.ps1
 
 .NOTES
-    FileName:    RemoveWin10Apps.ps1
+    FileName:    RemoveApps.ps1
     Author:      Scott Breen
 
     Version history:
     0.1 - Initial script
+    0.2 - updated with new Windows 11 xbox app 
 
 #>
 
@@ -31,6 +32,7 @@ $AppsToRemove = @(
     "Microsoft.People",
     "Microsoft.MicrosoftSolitaireCollection",
     "Microsoft.Skype",
+    "Microsoft.GamingApp",
     "Microsoft.ZuneMusic",
     "Microsoft.ZuneVideo",
     "Microsoft.WindowsFeedbackHub",
