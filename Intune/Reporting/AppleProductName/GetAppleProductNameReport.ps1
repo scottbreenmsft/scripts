@@ -11,7 +11,14 @@ Version History
 ####################################################
 
 ####################################################
-
+[CmdletBinding()]
+param (
+    [Parameter()]
+    [String]
+    $fileName="export.csv",
+    [switch]$ios=$true,
+    [switch]$macos=$true
+)
 function Get-AuthToken {
 
     <#
@@ -154,83 +161,29 @@ function Get-AuthToken {
 
     
 ####################################################
-Function Get-GroupMembers {
-	
-[cmdletbinding()]
-    param (
-        $id
-    )
-
-	
-	$graphApiVersion = "Beta"
-	$Resource = "groups/$id/transitiveMembers"
-    $body='{"securityEnabledOnly": true}'
-	
-	try
-	{
-        $results=@()
-		$uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)"
-		$result=(Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get)
-        $results+=$result.value.id
-
-        #page if necessary - https://docs.microsoft.com/en-us/graph/paging
-        if ($result."@odata.nextLink") {
-            write-verbose "$($results.count) returned. More results are available, will begin paging."
-            $noMoreResults=$false
-            do {
-
-                #retrieve the next set of results
-                $result=Invoke-RestMethod -Uri $result."@odata.nextLink" -Headers $authToken -Method Get -ErrorAction Continue
-                $results+=$result.value.id
-
-                #check if we need to continue paging
-                If (-not $result."@odata.nextLink") {
-                    $noMoreResults=$true
-                    write-verbose "$($results.count) returned. No more pages."
-                } else {
-                    write-verbose "$($results.count) returned so far. Retrieving next page."
-                }
-            } until ($noMoreResults)
-        }
-
-
-        return $results
-
-	}
-	
-	catch
-	{
-		
-		$ex = $_.Exception
-        If ($ex.Response) {
-		    $errorResponse = $ex.Response.GetResponseStream()
-		    $reader = New-Object System.IO.StreamReader($errorResponse)
-		    $reader.BaseStream.Position = 0
-		    $reader.DiscardBufferedData()
-		    $responseBody = $reader.ReadToEnd();
-		    write-verbose "Response content:`n$responseBody" 
-            Write-Error "Request to $Uri failed with HTTP Status $($ex.Response.StatusCode) $($ex.Response.StatusDescription)"
-        } else {
-            write-error $ex.message
-        }
-		break
-		
-	}
-	
-}
-####################################################
 
 ####################################################
-Function Get-MacDevices {
+Function Get-Devices {
     
-[cmdletbinding()]
+    [cmdletbinding()]
 
-#https://docs.microsoft.com/en-us/graph/query-parameters
+    param
+    (
+        [switch]$ios=$false,
+        [switch]$macos=$false
+    )
 
     
     $graphApiVersion = "beta"
-    $Resource = "deviceManagement/managedDevices"
-    $resource="deviceManagement/managedDevices?`$filter=((deviceType%20eq%20%27macMDM%27))"
+    If ($ios -eq $true -and $macOS -ne $true) {
+        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'iOS'"
+    }
+    If ($ios -ne $true -and $macOS -eq $true) {
+        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'macOS'"
+    }
+    If ($ios -eq $true -and $macOS -eq $true) {
+        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'iOS' or operatingSystem eq 'macOS'"
+    }
 
     try
     {
@@ -322,22 +275,23 @@ CheckAuthToken $user
 
 
 
-$devices=(Get-MacDevices).value
+$devices=(Get-Devices -ios:$ios -macos:$macos).value
 
-$MacInventoryResults=@()
+$InventoryResults=@()
 write-output "$($devices.count) returned."
 Foreach ($device in $devices) {
     $uri="https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,hardwareinformation"
     $results2=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
     $device | add-member -NotePropertyName ProductName -NotePropertyValue $results2.hardwareInformation.productname
-    $MacInventoryResults+=$device
+    $InventoryResults+=$device
 }
 
 #get on latest check in for duplicates
-$UniqueList = $MacInventoryResults | Group-Object -Property serialnumber | ForEach-Object{$_.Group | Sort-Object -Property lastsyncdatetime -Descending | Select-Object -First 1}
+$UniqueList = $InventoryResults | Group-Object -Property serialnumber | ForEach-Object{$_.Group | Sort-Object -Property lastsyncdatetime -Descending | Select-Object -First 1}
 
 #display summary
-$UniqueList | ft serialnumber,productname,lastsyncdatetime
+$UniqueList | Format-Table serialnumber,productname,lastsyncdatetime
 
 #export to CSV
-$UniqueList | export-csv -NoTypeInformation export.csv
+write-host "Showing $($UniqueList.count) filtered results by serialNumber and lastSyncDateTime. Exporting to $fileName."
+$UniqueList | export-csv -NoTypeInformation $fileName
