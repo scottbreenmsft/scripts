@@ -5,7 +5,8 @@ Licensed under the MIT license.
 See LICENSE in the project root for license information.
 
 Version History
-0.1    28th July 2022    Initial version
+0.1     28th July 2022  Initial version
+0.1     28th July 2022  Added code to cater for throlling with wrapper command Invoke-RestMethodEx
 #>
 
 ####################################################
@@ -237,7 +238,44 @@ Function Get-Devices {
 
 ####################################################
 
-
+function Invoke-RestMethodEx
+{
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [hashtable]
+        $Params, #Splatting only!
+        [Parameter(Mandatory=$false)]
+        [int]
+        $SequentialSleeps = 25
+    )
+    Write-Verbose $Params["Uri"]
+    $sleeps = 0
+    while($sleeps -le $SequentialSleeps) {
+        try {
+            $response = Invoke-RestMethod @Params
+            $tooManyReq = if ($null -ne $response.responses) {$response.responses | Where-Object {$_.status -eq 429} | Select-Object -Last 1} else {$null} #Handle 429 errors that are returned in JSON batched requests
+            if ($null -ne $tooManyReq -and $null -ne $tooManyReq.headers.'Retry-After') {
+                $sleeps++
+                $retryAfter = $tooManyReq.headers.'Retry-After'
+                Write-Warning "Getting throttled! Waiting for $retryAfter seconds.."
+                Start-Sleep -Seconds $retryAfter
+            } else {
+                return $response
+            }
+        }
+        catch {
+            if ($null -ne $_.Exception.Response.StatusCode -and $_.Exception.Response.StatusCode -eq 429) {
+                $retryAfter = $_.Exception.Response.Headers["Retry-After"]
+                Write-Warning "Getting throttled! Waiting for $retryAfter seconds.."
+                Start-Sleep -Seconds $retryAfter
+            } else {
+                throw $_
+            }
+        }
+    }
+    return $response #Welp, we tried.
+}
 
 ####################################################
 
@@ -273,14 +311,25 @@ CheckAuthToken $user
 
 
 
+#Getting all Mac devices
 $devices=(Get-Devices -macos).value
-
-$InventoryResults=@()
 write-output "$($devices.count) returned."
+
+#because the attribute returned from a list view is not valid, we must iterate through each device and get the attribute
 Foreach ($device in $devices) {
-    $uri="https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,bootstrapTokenEscrowed"
-    $results2=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
+    $Parameters=@{
+        "uri"="https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,bootstrapTokenEscrowed"
+        "Headers"=$authToken
+        "Method"="Get"
+    }
+    
+    #using custom Invoke-RestMethodEx function which is a wrapper for Invoke-RestMethod that can handle throlling. This is important in large tenants.
+    $results2=Invoke-RestMethodEx -Params $Parameters
+
+    #Overwritting the value in the results
     $device | add-member -NotePropertyName bootstrapTokenEscrowed -NotePropertyValue $results2.bootstrapTokenEscrowed -force
+
+    #adding the results to our table
     $InventoryResults+=$device
 }
 
