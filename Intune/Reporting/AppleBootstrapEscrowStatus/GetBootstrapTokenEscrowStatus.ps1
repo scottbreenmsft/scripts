@@ -6,7 +6,8 @@ See LICENSE in the project root for license information.
 
 Version History
 0.1     28th July 2022  Initial version
-0.1     28th July 2022  Added code to cater for throlling with wrapper command Invoke-RestMethodEx
+0.2     28th July 2022  Added code to cater for throlling with wrapper command Invoke-RestMethodEx
+0.3     28th July 2022  Reduced code complexity by getting bootstrapTokenEscrowed status using "select" in Graph Query
 #>
 
 ####################################################
@@ -169,25 +170,30 @@ Function Get-Devices {
     param
     (
         [switch]$ios=$false,
-        [switch]$macos=$false
+        [switch]$macos=$false,
+        [string]$select
     )
 
     
     $graphApiVersion = "beta"
     If ($ios -eq $true -and $macOS -ne $true) {
-        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'iOS'"
+        $filter="?`$filter=operatingSystem eq 'iOS'"
     }
     If ($ios -ne $true -and $macOS -eq $true) {
-        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'macOS'"
+        $filter="?`$filter=operatingSystem eq 'macOS'"
     }
     If ($ios -eq $true -and $macOS -eq $true) {
-        $resource="deviceManagement/managedDevices?`$filter=operatingSystem eq 'iOS' or operatingSystem eq 'macOS'"
+        $filter="?`$filter=operatingSystem eq 'iOS' or operatingSystem eq 'macOS'"
+    }
+
+    If ($select) {
+        $select="&`$select=$select"
     }
 
     try
     {
         $results=@()
-        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)$($filter)"
+        $uri = "https://graph.microsoft.com/$graphApiVersion/$($Resource)$($filter)$select"
         $result=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
         $results+=$result
 
@@ -312,28 +318,9 @@ CheckAuthToken $user
 
 
 #Getting all Mac devices
-$devices=(Get-Devices -macos).value
+$devices=(Get-Devices -macos -select bootstrapTokenEscrowed).value
 write-output "$($devices.count) returned."
 
-#because the attribute returned from a list view is not valid, we must iterate through each device and get the attribute
-Foreach ($device in $devices) {
-    $Parameters=@{
-        "uri"="https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,bootstrapTokenEscrowed"
-        "Headers"=$authToken
-        "Method"="Get"
-    }
-    
-    #using custom Invoke-RestMethodEx function which is a wrapper for Invoke-RestMethod that can handle throlling. This is important in large tenants.
-    $results2=Invoke-RestMethodEx -Params $Parameters
-
-    #Overwritting the value in the results
-    $device | add-member -NotePropertyName bootstrapTokenEscrowed -NotePropertyValue $results2.bootstrapTokenEscrowed -force
-
-    #adding the results to our table
-    $InventoryResults+=$device
-}
-
-#get on latest check in for duplicates
 $UniqueList = $InventoryResults | Group-Object -Property serialnumber | ForEach-Object{$_.Group | Sort-Object -Property lastsyncdatetime -Descending | Select-Object -First 1}
 
 #display summary
