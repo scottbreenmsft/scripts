@@ -280,7 +280,7 @@ write-output "$($devices.count) returned."
 Foreach ($device in $devices) {
     $uri="https://graph.microsoft.com/beta/deviceManagement/managedDevices/$($device.id)?`$select=id,bootstrapTokenEscrowed"
     $results2=Invoke-RestMethod -Uri $uri -Headers $authToken -Method Get
-    $device | add-member -NotePropertyName bootstrapTokenEscrowedDownloaded -NotePropertyValue $results2.bootstrapTokenEscrowed
+    $device | add-member -NotePropertyName bootstrapTokenEscrowed -NotePropertyValue $results2.bootstrapTokenEscrowed -force
     $InventoryResults+=$device
 }
 
@@ -288,7 +288,7 @@ Foreach ($device in $devices) {
 $UniqueList = $InventoryResults | Group-Object -Property serialnumber | ForEach-Object{$_.Group | Sort-Object -Property lastsyncdatetime -Descending | Select-Object -First 1}
 
 #display summary
-$UniqueList | Format-Table serialnumber,bootstrapTokenEscrowedDownloaded
+$UniqueList | Format-Table serialnumber,bootstrapTokenEscrowed
 
 #export to CSV
 write-host "Showing $($UniqueList.count) filtered results by serialNumber and lastSyncDateTime. Exporting to $fileName."
