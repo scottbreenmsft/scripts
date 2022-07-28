@@ -1,0 +1,2 @@
+# Mac Device Model Report
+As of the 2207 release of Intune, the Product Name attribute is now collected. This information can be viewed per device in the Microsoft Endpoint Manager admin console, of can be retrieved for all Mac devices using a script that interacts with Graph. This script provides a sample of the code you could use to retrieve a list of Mac devices and their model number. The script also filters the returned results and removes duplicate entries by serial number based on last sync time. By default the script exports to the current directory export.csv.
