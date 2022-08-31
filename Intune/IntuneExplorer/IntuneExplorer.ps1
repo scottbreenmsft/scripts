@@ -3,17 +3,20 @@
 
 Connect-MgGraph -Scopes @("Group.Read.All","DeviceManagementApps.Read.All","DeviceManagementConfiguration.Read.All") -ContextScope Process
 Select-MgProfile -Name "beta"
-Connect-MSGraph
+#Connect-MSGraph
+#Get-MgDeviceManagementDeviceConfiguration -All -ExpandProperty assignments
 
 
-
-$Configs=Get-IntuneDeviceConfigurationPolicy -Expand assignments
+#$Configs=Get-IntuneDeviceConfigurationPolicy -Expand assignments
+write-host "Getting device config profiles"
+$Configs=Get-MgDeviceManagementDeviceConfiguration -All -ExpandProperty assignments
 #$Apps=Get-IntuneMobileApp -Expand assignments
-$Apps=Get-MgDeviceAppManagementMobileApp -Expand assignments
+write-host "Getting applications"
+$Apps=Get-MgDeviceAppManagementMobileApp -All -Expand assignments
 $ConfigAssignments= $Configs| Where-Object {$_.Assignments -ne "{}"}
 $AppAssignments=$Apps | Where-Object {$_.Assignments -ne "{}"}
 
-
+write-host "Processing configuration assignments"
 
 $ConfigurationsWithGroups=@()
 
@@ -42,7 +45,7 @@ Foreach ($Config in $ConfigAssignments) {
 $GroupName=$null
 $groupID=$null
 
-
+write-host "Processing application assignments"
 $Applications=@()
 
 Foreach ($App in $AppAssignments) {
@@ -98,7 +101,7 @@ Function Get-Parents ($GroupID) {
     }
     return $GroupStructure
 }
-
+write-host "Processing group structure"
 $GroupStructure=@()
 $Groups=@()
 $Groups=$Applications.GroupID | Where-Object {$_ -notin ('AllUsers','AllDevices')}
@@ -152,3 +155,4 @@ $toplevel=$memberof | where {$_.Parent -eq $null}
 Foreach ($Group in $toplevel) {
     PrintList -Group $Group -Indent ""
 }
+
