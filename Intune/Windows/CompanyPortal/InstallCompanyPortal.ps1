@@ -56,7 +56,7 @@ $packageFamilyName="Microsoft.CompanyPortal_8wekyb3d8bbwe"
 $DependantProgramPackageFamilyName="Microsoft.Services.Store.Engagement_8wekyb3d8bbwe"
 
 write-output "Triggering company portal install"
-$app=Where-Object {$_.packageFamilyName -eq $packageFamilyName}
+$app=Get-AppxPackage -Allusers | Where-Object {$_.packageFamilyName -eq $packageFamilyName}
 
 #Company Portal is installed, but we need to check if a required component installed, otherwise we should reinstall Company Portal. 
 #There have been reported instances of a reset resulting in company portal being installed but this component is missing
