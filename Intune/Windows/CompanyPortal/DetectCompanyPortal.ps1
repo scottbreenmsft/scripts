@@ -1,5 +1,5 @@
 $packageFamilyName="Microsoft.CompanyPortal_8wekyb3d8bbwe"
-$app=Where-Object {$_.packageFamilyName -eq $packageFamilyName}
+$app=Get-AppxPackage -Allusers | Where-Object {$_.packageFamilyName -eq $packageFamilyName}
 if (-not $app) {
     write-output "Not installed"
     exit 1
