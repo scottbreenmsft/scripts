@@ -7,6 +7,8 @@ param (
 
 #connect to Microsoft Graph
 Connect-MgGraph -Scopes "DeviceManagementManagedDevices.Read.All"
+
+#We need the beta profile because ManagementCertificateExpirationDate is not available in v1.0 (on 19th September 2022)
 Select-MgProfile -Name "beta"
 
 #Get all devices from the tenant using graph
