@@ -24,10 +24,6 @@ $devices=$devices | Select-Object Id, DeviceName, DeviceType, IMEI, `
     @{Name="NewerDeviceRecord";Expression={
         $result=$false
         foreach($device in $devices) {
-                If ($_.SerialNumber -eq $device.SerialNumber -and $_.Id -ne $device.Id) {
-                    write-host $device.LastSyncDateTime
-                    write-host $_.LastSyncDateTime
-                }
                 If ($_.SerialNumber -eq $device.SerialNumber -and $_.ID -ne $device.ID -and $device.LastSyncDateTime -gt $_.LastSyncDateTime) {
                     $result=$true
                     break
