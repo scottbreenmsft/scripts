@@ -24,8 +24,9 @@ This report will provide a the number of devices with 45 days until expiry and t
 Welcome To Microsoft Graph!
 getting devices
 14 returned
-There are 2 devices that have expired management certificates
-There are 5 devices that will expire in less than 45 days
+ - There are 1 devices with newer records which have been filtered out (matched by serial number). They have NewerDeviceRecord set to true in the exported report.
+ - There are 2 devices that have expired management certificates
+ - There are 5 devices that will expire in less than 45 days
 Exported to ManagedDeviceCertificateExpiryReport.csv
 ```
 
