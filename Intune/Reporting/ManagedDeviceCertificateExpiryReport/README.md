@@ -14,6 +14,7 @@ This report will provide a the number of devices with 45 days until expiry and t
 - ManagementCertificateExpirationDate - the management certificate expiry date.
 - DaysUntilExpiry - the numnber of days until the management certificate expires.
 - Expired - true if management certificate has expired, false if still valid.
+- NewerDeviceRecord - A device record with the same serial number has been found that has synced more recently than this device record
 
 ## Parameters
 - fileName - the path for the report. Default is .\ManagedDeviceCertificateExpiryReport.csv
@@ -29,6 +30,6 @@ Exported to ManagedDeviceCertificateExpiryReport.csv
 ```
 
 ## Example Report
-|Id|DeviceName|DeviceType|Imei|UserPrincipalName|SerialNumber|LastSyncDateTime|ManagementCertificateExpirationDate|DaysUntilExpiry|Expired|
-|-|-|-|-|-|-|-|-|-|-|
-|fa8cccc-ccccc-4b56-cccc-07a1c920f5da|Scott's iPad|iPad||user@domain.com|00000000000|15/09/2022 22:07|1/08/2023 15:20|316|FALSE|
+|Id|DeviceName|DeviceType|Imei|UserPrincipalName|SerialNumber|LastSyncDateTime|ManagementCertificateExpirationDate|DaysUntilExpiry|Expired|NewerDeviceRecord
+|-|-|-|-|-|-|-|-|-|-|-|
+|fa8cccc-ccccc-4b56-cccc-07a1c920f5da|Scott's iPad|iPad||user@domain.com|00000000000|15/09/2022 22:07|1/08/2023 15:20|316|FALSE|FALSE|
