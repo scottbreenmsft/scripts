@@ -1,15 +1,17 @@
 $ScriptName="OneDriveSetupMachineInstall.ps1"
 
+#variables
+$eventSource = "My Scripts"
+
+#create an event log source to store the events
+New-EventLog -LogName Application -Source $eventSource -ErrorAction Ignore
+
 #check if onedrive machine setup is already installed
 If (-not (get-itempropertyvalue -PATH "hklm:\SOFTWARE\Microsoft\OneDrive\" -NAME "CurrentVersionPath" -ErrorAction SilentlyContinue)) {
 
-    #variables
+    #more variables
     $downloadURL="https://go.microsoft.com/fwlink/?linkid=844652"
     $outputfile="$env:temp\OneDriveSetup.exe"
-    $eventSource = "My Scripts"
-
-    #create an event log source to store the events
-    New-EventLog -LogName Application -Source $eventSource -ErrorAction Ignore
 
     #download the file
     Write-EventLog -LogName Application -Source $eventSource -EntryType Information -EventId 3 -message "$ScriptName : downloading from $downloadURL to $outputfile"
