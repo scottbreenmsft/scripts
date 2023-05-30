@@ -528,11 +528,12 @@ Function Get-RoleAssignments(){
             write-host "`tRole assignment name: $($assignment.displayName)"
             $RoleAssignment=Get-RoleAssignment $assignment.id
             write-host "`tRole assignment admin group IDs: $($RoleAssignment.members)"
-            $scopes=get-roleScopeTags -definition $roleDefinition.id -assignment $assignment.id
+            
             foreach ($Member in $RoleAssignment.members) {
                 if ($groups -contains $Member) {
                     $groupname=(Get-AzureADGroupNameGraph $member).displayName
                     write-host "`tUser found in Azure AD Group $groupname" -ForegroundColor Green
+                    $scopes=get-roleScopeTags -definition $roleDefinition.id -assignment $assignment.id
                     If ($scopes) {
                         foreach ($scope in $scopes) {
                             #write-host $scope.displayName
