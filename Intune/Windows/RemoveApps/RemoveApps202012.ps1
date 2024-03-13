@@ -19,6 +19,7 @@
     Version history:
     0.1 - Initial script
     0.2 - updated with new Windows 11 xbox app 
+    0.3 - updated with additional Windows 11 23H2 apps
 
 #>
 
@@ -26,25 +27,33 @@ Start-Transcript -Path "$env:temp\RemoveApps.log"
 
 # List of apps to remove
 $AppsToRemove = @(
+    "Clipchamp.Clipchamp",
     "Microsoft.BingNews",
+    "Microsoft.BingWeather",
+    "Microsoft.GamingApp",
     "Microsoft.GetHelp",
-    "Microsoft.windowscommunicationsapps",
+    "Microsoft.GetStarted",
+    "Microsoft.MicrosoftJournal",
     "Microsoft.MicrosoftOfficeHub",
+    "Microsoft.MicrosoftSolitaireCollection",
+    "Microsoft.MixedReality.Portal",
     "Microsoft.PowerAutomateDesktop",
     "Microsoft.People",
-    "Microsoft.MicrosoftSolitaireCollection",
     "Microsoft.Skype",
-    "Microsoft.GamingApp",
-    "Microsoft.ZuneMusic",
-    "Microsoft.ZuneVideo",
+    "Microsoft.windowscommunicationsapps",
+    "Microsoft.Windows.DevHome",
     "Microsoft.WindowsFeedbackHub",
+    "Microsoft.WindowsMaps",
     "Microsoft.XboxApp",
+    "Microsoft.XboxGameCallableUI",
     "Microsoft.XboxGameOverlay",
     "Microsoft.XboxGamingOverlay",
     "Microsoft.XboxIdentityProvider",
     "Microsoft.XboxSpeechToTextOverlay",
+    "Microsoft.Xbox.TCUI",
     "Microsoft.YourPhone",
-    "Microsoft.XboxGameCallableUI"
+    "Microsoft.ZuneMusic",
+    "Microsoft.ZuneVideo"
 )
 
 Write-output "Apps to remove:`n$($AppsToRemove -join "`n")"
