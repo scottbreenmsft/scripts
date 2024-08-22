@@ -36,7 +36,7 @@ $devices=$devices | Select-Object Id, DeviceName, DeviceType, IMEI, `
 #Provide Management Certificate status summary
 write-host " - There are $(@($devices | Where-Object {$_.NewerDeviceRecord}).count) devices with newer records which have been filtered out of the counts below (matched by serial number). They have NewerDeviceRecord set to true in the exported report."
 write-host " - There are $(@($devices | Where-Object {$_.Expired -and -not $_.NewerDeviceRecord}).count) devices that have expired management certificates" -ForegroundColor red
-write-host " - There are $(@($devices | Where-Object {$_.DaysUntilExpiry -lt 45 -and -not $_.NewerDeviceRecord}).count) devices that will expire in less than 45 days"
+write-host " - There are $(@($devices | Where-Object {$_.DaysUntilExpiry -lt 120 -and -not $_.NewerDeviceRecord}).count) devices that will expire in less than 120 days"
 
 #export the full device list to $fileName
 $devices | Export-Csv $fileName -NoTypeInformation
