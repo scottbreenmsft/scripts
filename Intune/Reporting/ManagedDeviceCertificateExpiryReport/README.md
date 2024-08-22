@@ -1,7 +1,7 @@
 # Managed Device Certificate Expiry Report
 This script provides a summary of devices that are about to have expired management certificates. It is important to check that devices have updated their management certificate before they expire of they will no longer be able to connect to Intune.
 
-Intune will attempt to update the management certficate starting at 45 days before expiry.
+Intune will attempt to update the management certficate starting at 120 days before expiry.
 
 This report will provide a the number of devices with 45 days until expiry and then export a list of all devices with the following properties:
 - ID
